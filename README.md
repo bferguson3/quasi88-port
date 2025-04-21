@@ -1,3 +1,11 @@
+### Regarding Build
+1. Ensure that the OLD sound driver is configured in the Makefile. The new sound driver will generally not output any sound on OSX.
+2. The standard brew and/or Framework install of SDL2 is not sufficient. Use the patched version included in this repository to ensure that header files are located properly. 
+(The present version of SDL2 still searches for "SDL2/" as a prefix for all header files. The patch fixes this, or you can do it yourself.) 
+3. If you need a BIOS, my own unit's is here: https://www.barelyconsciousgames.com/pc8801mkiifr_bios.zip
+Create a new folder and extract it to ~/quasi88/rom
+4. English option coming soon ?
+
 ### ***★QUASI88とは?***
 ---
 &nbsp;&nbsp;QUASI88 は、UNIX + X Window System ないし UNIX + SDL の環境で動作する PC-8801 エミュレータです。<br />
