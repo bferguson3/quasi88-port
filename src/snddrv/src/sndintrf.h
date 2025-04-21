@@ -263,11 +263,7 @@ const char *sndtype_get_info_string(int sndtype, UINT32 state);
 ***************************************************************************/
 
 /* Initialization/Tear down */
-#if 0		/* QUASI88 */
 void sndintrf_init(running_machine *machine);
-#else		/* QUASI88 */
-void sndintrf_init(void);
-#endif		/* QUASI88 */
 int sndintrf_init_sound(int sndnum, int sndtype, int clock, const void *config);
 void sndintrf_exit_sound(int sndnum);
 void sndintrf_register_token(void *token);

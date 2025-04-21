@@ -2,144 +2,98 @@
 #
 # Makefile for quasi88/UNIX (FreeBSD, Linux, Mac OS X and so on...)
 #
-#	╔мд║бвGNU make дм╔м═╫д╟д╣бг
+#	х┐ЕуБЪуАБGNU make уБМх┐ЕшжБуБзуБЩуАВ
 #
-#			    д│д╬ Makefile д╬║ю└од╦двд┐д├д╞д╧ XMAME д╬ 
-#			    makefile.unixбвsrc/unix/unix.mak дЄ╗▓╣═д╦д╖д▐д╖д┐бг
-#			    е│еєе╤едеы┤╪╧вд╬└▀─ъд╦д─ддд╞д╧бв╛х╡нд╬е╒ебедеыд╦
-#			    ╡н║▄д╡дьд╞дддые│есеєе╚дм╠Є╬йд─длдтд╖дьд▐д╗дєбг
+#			    уБУуБо Makefile уБоф╜ЬцИРуБлуБВуБЯуБгуБжуБп XMAME уБо 
+#			    makefile.unixуАБsrc/unix/unix.mak уВТхПВшАГуБлуБЧуБ╛уБЧуБЯуАВ
+#			    уВ│уГ│уГСуВдуГлщЦвщАгуБошинхоЪуБлуБдуБДуБжуБпуАБф╕КшиШуБоуГХуВбуВдуГлуБл
+#			    шиШш╝ЙуБХуВМуБжуБДуВЛуВ│уГбуГ│уГИуБМх╜╣члЛуБдуБЛуВВуБЧуВМуБ╛уБЫуВУуАВ
 ###############################################################################
 
-# X11╚╟бвSDL╚╟д╬ддд║дьдлдЄ└▀─ъд╖д▐д╣
-#	X11╚╟д╬╛ь╣чд╧бвб╓X11_VERSIONб╫░╩│░д╬╣╘дЄе│есеєе╚евеже╚д╖д╞дпд└д╡ддбг
-#	SDL╚╟д╬╛ь╣чд╧бвб╓SDL_VERSIONб╫░╩│░д╬╣╘дЄе│есеєе╚евеже╚д╖д╞дпд└д╡ддбг
-#	GTK╚╟д╬╛ь╣чд╧бвб╓GTK_VERSIONб╫░╩│░д╬╣╘дЄе│есеєе╚евеже╚д╖д╞дпд└д╡ддбг
-#	( GTK╚╟д╧╝┬╕│├цд╟д╣бгGTK╚╟д╟е╡ежеєе╔дЄ╠─дщд╣д╦д╧бвSDL дм╔м═╫д╟д╣ )
-
-# X11_VERSION	= 1
-#SDL_VERSION	= 1
-SDL2_VERSION	= 1
-# GTK_VERSION	= 1
-
-
 #######################################################################
-# ┤Ё╦▄└▀─ъ
+# хЯ║цЬмшинхоЪ
 #######################################################################
 
 
-# ROM═╤е╟егеьепе╚еъдЄ└▀─ъд╖д▐д╣
-#	BASIC д╬ ROMедесб╝е╕ дЄ╕б║ўд╣дые╟егеьепе╚еъд╟д╣бг
-#	еке╫е╖ечеєд╟д╬╗╪─ъдтбв┤─╢н╩╤┐Їд╬└▀─ъдт╠╡дд╛ь╣чд╦бвд│д│д╟└▀─ъд╖д┐
-#	е╟егеьепе╚еъдм╗╚═╤д╡дьд▐д╣бг
-#	 ~/ д╧бвQUASI88д╬╡п╞░╗■д╦е█б╝ере╟егеьепе╚еъб╩$HOMEб╦д╦┼╕│лд╡дьд▐д╣бг
+# QUASI88 уБзф╜┐чФиуБЩуВЛхРДчиоуГЗуВгуГмуВпуГИуГкуВТшинхоЪуБЧуБ╛уБЩуАВ
+#	уБДуБПуБдуБЛуБпуАБчТ░хвГхдЙцХ░уВДш╡╖хЛХцЩВуБоуВкуГЧуВ╖уГзуГ│уБзцМЗхоЪуБЩуВЛуБУуБиуБМуБзуБНуБ╛уБЩуБМуАБ
+#	уБЭуВМуВЙуБоцМЗхоЪуБМуБкуБДха┤хРИуБоуАБуГЗуГХуВйуГлуГИуВТшинхоЪуБЧуБ╛уБЩуАВ
+#	 ~/ уБпуАБQUASI88уБош╡╖хЛХцЩВуБлуГЫуГ╝уГауГЗуВгуГмуВпуГИуГкя╝И$HOMEя╝ЙуБлх▒ХщЦЛуБХуВМуБ╛уБЩуАВ
 
-ROMDIR	= ~/.quasi88/rom/
+# уГ╗ROMчФиуГЗуВгуГмуВпуГИуГкуВТшинхоЪуБЧуБ╛уБЩ
+#	BASIC уБо ROMуВдуГбуГ╝уВ╕ уВТцдЬч┤вуБЩуВЛуГЗуВгуГмуВпуГИуГкуБзуБЩуАВ
 
-
-# DISK═╤е╟егеьепе╚еъдЄ└▀─ъд╖д▐д╣
-#	╡п╞░╗■д╦бв░·┐Їд╟╗╪─ъд╖д┐едесб╝е╕е╒ебедеыдЄ│лдп║▌д╦бв
-#	д╜д╬е╒ебедеыдЄ╕б║ўд╣дые╟егеьепе╚еъд╟д╣бг
-#	еке╫е╖ечеєд╟д╬╗╪─ъдтбв┤─╢н╩╤┐Їд╬└▀─ъдт╠╡дд╛ь╣чд╦бвд│д│д╟└▀─ъд╖д┐
-#	е╟егеьепе╚еъдм╗╚═╤д╡дьд▐д╣бг
-#	 ~/ д╧бвQUASI88д╬╡п╞░╗■д╦е█б╝ере╟егеьепе╚еъб╩$HOMEб╦д╦┼╕│лд╡дьд▐д╣бг
-
-DISKDIR	= ~/.quasi88/disk/
+ROMDIR	= ~/quasi88/rom/
 
 
-# TAPE═╤е╟егеьепе╚еъдЄ└▀─ъд╖д▐д╣
-#	TAPE д╬едесб╝е╕дЄ├╓дпе╟егеьепе╚еъд╟д╣бг
-#	еке╫е╖ечеєд╟д╬╗╪─ъдтбв┤─╢н╩╤┐Їд╬└▀─ъдт╠╡дд╛ь╣чд╦бвд│д│д╟└▀─ъд╖д┐
-#	е╟егеьепе╚еъдм╗╚═╤д╡дьд▐д╣бг
-#	 ~/ д╧бвQUASI88д╬╡п╞░╗■д╦е█б╝ере╟егеьепе╚еъб╩$HOMEб╦д╦┼╕│лд╡дьд▐д╣бг
+# уГ╗DISKчФиуГЗуВгуГмуВпуГИуГкуВТшинхоЪуБЧуБ╛уБЩ
+#	ш╡╖хЛХцЩВуБлуАБх╝ХцХ░уБзцМЗхоЪуБЧуБЯуВдуГбуГ╝уВ╕уГХуВбуВдуГлуВТщЦЛуБПщЪЫуБлуАБ
+#	уБЭуБоуГХуВбуВдуГлуВТцдЬч┤вуБЩуВЛуГЗуВгуГмуВпуГИуГкуБзуБЩуАВ
 
-TAPEDIR	= ~/.quasi88/tape/
+DISKDIR	= ~/quasi88/disk/
 
 
-# (X11)
-# еъе╚еыеиеєе╟егевеєд╬╛ь╣чд╬╗╪─ъ
-#	е╙е├е░еиеєе╟егевеєе▐е╖еєд╬╛ь╣чд╧бве│есеєе╚евеже╚д╖д▐д╖дчджбг
-#	    ╬удид╨бвIRIX, AIXбвMac OS X(PowerPC) д╩д╔д╧бве│есеєе╚евеже╚д╖д▐д╣бг
-#		    Intel ╖╧д╬ CPUдЄ╗╚д├д┐ OS д╩д╔д╧бвд│д╬д▐д▐д╦д╖д╞дкднд▐д╣бг
+# уГ╗TAPEчФиуГЗуВгуГмуВпуГИуГкуВТшинхоЪуБЧуБ╛уБЩ
+#	TAPE уБоуВдуГбуГ╝уВ╕уВТч╜оуБПуГЗуВгуГмуВпуГИуГкуБзуБЩуАВ
 
-X11_LSB_FIRST	= 1
+TAPEDIR	= ~/quasi88/tape/
 
 
-# (X11)
-# MIT-SHM дЄ╗╚дждлд╔дждлд╬╗╪─ъ
-#	MIT-SHM дЄе╡е▌б╝е╚д╖д╞д╩дд╛ь╣чд╧бве│есеєе╚евеже╚д╖д▐д╖дчджбг
+# уГ╗уВ╣уГКуГГуГЧуВ╖уГзуГГуГИф┐ЭхнШхЕИуГЗуВгуГмуВпуГИуГкуВТшинхоЪуБЧуБ╛уБЩ
+#	уВ╣уВпуГкуГ╝уГ│уВ╣уГКуГГуГЧуВ╖уГзуГГуГИуБочФ╗хГПуГХуВбуВдуГлуБМф┐ЭхнШуБХуВМуВЛуГЗуВгуГмуВпуГИуГкуБзуБЩуАВ
+#	уВ│уГбуГ│уГИуВвуВжуГИуБХуВМуБжуБДуВЛха┤хРИуБпуАБуВлуГмуГ│уГИуГЗуВгуГмуВпуГИуГкуБлуБкуВКуБ╛уБЩуАВ
 
-X11_MITSHM	= 1
-
-
-
-# (X11)
-# long long ╖┐дЄе╡е▌б╝е╚д╖д╞ддд╩дде│еєе╤едещдЄ╗╚дж╛ь╣чбв░╩▓╝дЄе│есеєе╚евеже╚
-# д╖д╞дпд└д╡ддбг (┬ч─ёд╬е│еєе╤едещд╧е╡е▌б╝е╚д╖д╞дддыбжбжбже╧е║)
-
-X11_HAVE_LONG_LONG = 1
+# SNAPDIR = ~/
 
 
+# уГ╗уВ╣уГЖуГ╝уГИуГХуВбуВдуГлф┐ЭхнШхЕИуГЗуВгуГмуВпуГИуГкуВТшинхоЪуБЧуБ╛уБЩ
+#	уВ╣уГЖуГ╝уГИуВ╗уГ╝уГЦцЩВуБоуГХуВбуВдуГлуБМф┐ЭхнШуБХуВМуВЛуГЗуВгуГмуВпуГИуГкуБзуБЩуАВ
+#	уВ│уГбуГ│уГИуВвуВжуГИуБХуВМуБжуБДуВЛха┤хРИуБпуАБ ~/.quasi88/state/ уБлуБкуВКуБ╛уБЩуАВ
 
-# (X11)
-# ┤╪┐Ї gettimeofday() дЄ╝┬┴їд╖д╞ддд╩дде╖е╣е╞ерд╬╛ь╣чбв░╩▓╝дЄе│есеєе╚евеже╚
-# д╖д╞дпд└д╡ддбг (┬ч─ёд╬е╖е╣е╞ерд╧╝┬┴їд╖д╞дддыбжбжбже╧е║)
+# STATEDIR = ~/.quasi88/state/
 
-X11_HAVE_GETTIMEOFDAY = 1
+
+# уГ╗хАЛхИешинхоЪуГХуВбуВдуГлчФиуГЗуВгуГмуВпуГИуГкуВТшинхоЪуБЧуБ╛уБЩ
+#	ш╡╖хЛХцЩВуБлуГЗуВгуВ╣уВпуВдуГбуГ╝уВ╕уГХуВбуВдуГлуБиуБиуВВуБлшкнуБ┐ш╛╝уБ╛уВМуВЛуАБхАЛхИешинхоЪ
+#	уГХуВбуВдуГлуВТч╜оуБПуГЗуВгуГмуВпуГИуГкуБзуБЩуАВ
+#	уВ│уГбуГ│уГИуВвуВжуГИуБХуВМуБжуБДуВЛха┤хРИуБпуАБ ~/.quasi88/rc/ уБлуБкуВКуБ╛уБЩуАВ
+
+# LCFGDIR = ~/.quasi88/rc/
+
+
+# уГ╗хЕиф╜УшинхоЪуГХуВбуВдуГлчФиуГЗуВгуГмуВпуГИуГкуВТшинхоЪуБЧуБ╛уБЩ
+#	ш╡╖хЛХцЩВуБлшкнуБ┐ш╛╝уБ╛уВМуВЛуАБчТ░хвГшинхоЪуГХуВбуВдуГлуВТч╜оуБПуГЗуВгуГмуВпуГИуГкуБзуБЩуАВ
+#	уВ│уГбуГ│уГИуВвуВжуГИуБХуВМуБжуБДуВЛха┤хРИуБпуАБ ~/.quasi88/ уБлуБкуВКуБ╛уБЩуАВ
+
+# GCFGDIR = ~/.quasi88/
 
 
 
-# (X11)
-# е╕ечеде╣е╞еге├еп╗╚═╤д╬═н╠╡
-#	░╩▓╝д╬ддд║дьдлд╬░ьд─д╬д▀бве│есеєе╚дЄ│░д╣д│д╚дм╜╨═шд▐д╣бг
-#
-#	 б╓X11_JOYSTICK = joy_nothingб╫д╬╣╘д╬е│есеєе╚евеже╚дЄ│░д╣д╚бв
-#	е╕ечеде╣е╞еге├епд╧е╡е▌б╝е╚д╡дьд▐д╗дєбг
-#
-#	 б╓X11_JOYSTICK = joy_sdlб╫д╬╣╘д╬е│есеєе╚евеже╚дЄ│░д╣д╚бв
-#	SDLещеде╓ещеъд╦дшдые╕ечеде╣е╞еге├еп╡б╟╜дм┴╚д▀╣■д▐дьд▐д╣бг
-#	( Linux д╚ FreeBSDд╟╞░║ю│╬╟з║╤д▀бг╝┬║▌д╦е╕ечеде╣е╞еге├епдм╗╚дидыдл
-#	  д╔дждлд╧бвSDLещеде╓ещеъд╦░═┬╕д╖д▐д╣бг)
-#
-#	 б╓X11_JOYSTICK = joy_linux_usbб╫д╬╣╘д╬е│есеєе╚евеже╚дЄ│░д╣д╚бв
-#	Linux д╦д╞ USB joystick дм╗╚═╤д╟днд▐д╣бг
-#	( ┤─╢нд╦дшд├д╞д╧бв╗╚═╤д╟днд╩дддлдтд╖дьд▐д╗дє )
-#
-#	 б╓X11_JOYSTICK = joy_bsd_usbб╫д╬╣╘д╬е│есеєе╚евеже╚дЄ│░д╣д╚бв
-#	FreeBSD д╦д╞ USB joystick дм╗╚═╤д╟днд▐д╣бг
-#	( ┤─╢нд╦дшд├д╞д╧бве│еєе╤едеыд╣дщд╟днд╩дддлдтд╖дьд▐д╗дє )
-
-X11_JOYSTICK	= joy_nothing
-# X11_JOYSTICK	= joy_sdl
-# X11_JOYSTICK	= joy_linux_usb
-# X11_JOYSTICK	= joy_bsd_usb
-
-
-
-# QUASI88 д╟д╧есе╦ехб╝етб╝е╔д╦д╞е╣епеъб╝еєе╣е╩е├е╫е╖ече├е╚ (▓ш╠╠енеуе╫е┴еу)
-# д╬╩▌┬╕дм▓─╟╜д╟д╣дмбвд│д╬╗■д╦═╜дс╗╪─ъд╖д┐╟д░╒д╬е│е▐еєе╔дЄ╝┬╣╘д╣дыд│д╚дм
-# д╟днд▐д╣бг
-# д│д╬е│е▐еєе╔╝┬╣╘╡б╟╜дЄ╠╡╕·д╦д╖д┐дд╛ь╣чд╧бв░╩▓╝дЄе│есеєе╚евеже╚д╖д╞▓╝д╡ддбг
+# QUASI88 уБзуБпуГбуГЛуГеуГ╝уГвуГ╝уГЙуБлуБжуВ╣уВпуГкуГ╝уГ│уВ╣уГКуГГуГЧуВ╖уГзуГГуГИ (чФ╗щЭвуВнуГгуГЧуГБуГг)
+# уБоф┐ЭхнШуБМхПпшГ╜уБзуБЩуБМуАБуБУуБоцЩВуБлф║ИуВБцМЗхоЪуБЧуБЯф╗╗цДПуБоуВ│уГЮуГ│уГЙуВТхоЯшбМуБЩуВЛуБУуБиуБМ
+# уБзуБНуБ╛уБЩуАВ
+# уБУуБоуВ│уГЮуГ│уГЙхоЯшбМцйЯшГ╜уВТчДбхК╣уБлуБЧуБЯуБДха┤хРИуБпуАБф╗еф╕ЛуВТуВ│уГбуГ│уГИуВвуВжуГИуБЧуБжф╕ЛуБХуБДуАВ
 
 USE_SSS_CMD	= 1
 
 
 
-# ░╩▓╝д╧бвете╦е┐б╝етб╝е╔ (е╟е╨е├е░═╤д╬етб╝е╔) д╬╡б╟╜└▀─ъд╟д╣бг
-# ─╠╛яд╧ете╦е┐б╝етб╝е╔д╧╗╚═╤д╖д╩ддд╚╗╫дядьдыд╬д╟бв╞├д╦╩╤╣╣д╬╔м═╫д╧двдъд▐д╗дєбг
+# ф╗еф╕ЛуБпуАБуГвуГЛуВ┐уГ╝уГвуГ╝уГЙ (уГЗуГРуГГуВ░чФиуБоуГвуГ╝уГЙ) уБоцйЯшГ╜шинхоЪуБзуБЩуАВ
+# щАЪх╕╕уБпуГвуГЛуВ┐уГ╝уГвуГ╝уГЙуБпф╜┐чФиуБЧуБкуБДуБицАЭуВПуВМуВЛуБоуБзуАБчЙ╣уБлхдЙцЫ┤уБох┐ЕшжБуБпуБВуВКуБ╛уБЫуВУуАВ
 #
-#	  MONITOR д╬╣╘дме│есеєе╚евеже╚д╡дьд╞ддды╛ь╣чд╧бвете╦е┐б╝етб╝е╔д╧
-#	╗╚═╤д╟днд▐д╗дєбг
+#	  MONITOR уБошбМуБМуВ│уГбуГ│уГИуВвуВжуГИуБХуВМуБжуБДуВЛха┤хРИуБпуАБуГвуГЛуВ┐уГ╝уГвуГ╝уГЙуБп
+#	ф╜┐чФиуБзуБНуБ╛уБЫуВУуАВ
 #
-#	  ете╦е┐б╝етб╝е╔д╦д╞бвGNU Readline дЄ╗╚═╤д╣ды╛ь╣чбв
-#	READLINE ╣╘д╬е│есеєе╚евеже╚дЄ│░д╖д▐д╣бг
+#	  уГвуГЛуВ┐уГ╝уГвуГ╝уГЙуБлуБжуАБGNU Readline уВТф╜┐чФиуБЩуВЛха┤хРИуАБ
+#	READLINE шбМуБоуВ│уГбуГ│уГИуВвуВжуГИуВТхдЦуБЧуБ╛уБЩуАВ
 #
-#	  ете╦е┐б╝етб╝е╔д╟д╬╞■╬╧┬╘д┴╗■д╦ Ctrl-D дЄ▓бд╣д╚ QUASI88 д╧╢п└й╜к╬╗
-#	д╖д╞д╖д▐ддд▐д╣дмбвIRIX/AIX д╟д╧бвIGNORE_C_D д╬╣╘д╬е│есеєе╚евеже╚дЄ
-#	│░д╣д╚бвCtrl-D дЄ▓бд╖д╞дт╜к╬╗д╖д╩дпд╩дъд▐д╣бг
-#	( IRIX/AIX ░╩│░д╟д╧бв╔мд║е│есеєе╚евеже╚д╖д╞дкддд╞дпд└д╡ддбг)
+#	  уГвуГЛуВ┐уГ╝уГвуГ╝уГЙуБзуБохЕехКЫх╛ЕуБбцЩВуБл Ctrl-D уВТцК╝уБЩуБи QUASI88 уБпх╝╖хИ╢ч╡Вф║Ж
+#	уБЧуБжуБЧуБ╛уБДуБ╛уБЩуБМуАБIRIX/AIX уБзуБпуАБIGNORE_C_D уБошбМуБоуВ│уГбуГ│уГИуВвуВжуГИуВТ
+#	хдЦуБЩуБиуАБCtrl-D уВТцК╝уБЧуБжуВВч╡Вф║ЖуБЧуБкуБПуБкуВКуБ╛уБЩуАВ
+#	( IRIX/AIX ф╗ехдЦуБзуБпуАБх┐ЕуБЪуВ│уГбуГ│уГИуВвуВжуГИуБЧуБжуБКуБДуБжуБПуБауБХуБДуАВ)
 #
 
-USE_MONITOR		= 1
+# USE_MONITOR		= 1
 
 # MONITOR_READLINE	= 1
 # MONITOR_IGNORE_C_D	= 1
@@ -147,225 +101,129 @@ USE_MONITOR		= 1
 
 
 
-# PC-8801д╬енб╝е▄б╝е╔е╨е░дЄеие▀ехеьб╝е╚д╖д┐дд╛ь╣чд╧бв
-# ░╩▓╝д╬е│есеєе╚евеже╚дЄ│░д╖д╞▓╝д╡ддбг
+# PC-8801уБоуВнуГ╝уГЬуГ╝уГЙуГРуВ░уВТуВиуГЯуГеуГмуГ╝уГИуБЧуБЯуБДха┤хРИуБпуАБ
+# ф╗еф╕ЛуБоуВ│уГбуГ│уГИуВвуВжуГИуВТхдЦуБЧуБжф╕ЛуБХуБДуАВ
 
 # USE_KEYBOARD_BUG	= 1
 
 
 
-# (X11)
-# XFree86-DGA д╬└▀─ъд╟д╣бг╢╜╠гд╬двды╩¤д╧д╔джд╛бжбжбж
-#	XFree86-DGAдЄ═н╕·д╦д╣дыд╦д╧бвroot╕в╕┬дм╔м═╫д╩д╬д╟бвд┤├э░╒▓╝д╡ддбг
-
-# X11_DGA		= 1
-
-
-
-# (X11)
-# XVideo д╬└▀─ъд╟д╣бг╢╜╠гд╬двды╩¤д╧д╔джд╛бжбжбж
-#	д▐д└╝┬╕│├цд╟д╣бк джд▐дп╞░длд╩дддлдтд╖дьд▐д╗дєбг
-
-# X11_XV		= 1
-
-
-
 #######################################################################
-# е╡ежеєе╔┤╪╧вд╬└▀─ъ
+# уВ╡уВжуГ│уГЙщЦвщАгуБошинхоЪ
 #######################################################################
 
-# MAME/XMAME е┘б╝е╣д╬е╡ежеєе╔╜╨╬╧дЄ┴╚д▀╣■д▐д╩дд╛ь╣чбв░╩▓╝д╬╣╘дЄ
-# е│есеєе╚евеже╚д╖д╞▓╝д╡ддбг
+# MAME/XMAME уГЩуГ╝уВ╣уБоуВ╡уВжуГ│уГЙхЗ║хКЫуВТч╡ДуБ┐ш╛╝уБ╛уБкуБДха┤хРИуАБф╗еф╕ЛуБошбМуВТ
+# уВ│уГбуГ│уГИуВвуВжуГИуБЧуБжф╕ЛуБХуБДуАВ
 
 USE_SOUND		= 1
 
 
 
-# (X11)
-# OS д╬╗╪─ъ
-#	д╔дьдл░ьд─дЄ╗╪─ъд╖д╞дпд└д╡ддбг
-#	generic дЄ┴кд╓д╚бве╡ежеєе╔д╩д╖д╦д╩дъд▐д╣бг
-#	д╜ д╬ ┬╛дЄ┴кд╓д╚бве╡ежеєе╔двдъд╦д╩ды╛ь╣чдтдвдъд▐д╣бг
-#	╞░║ю│╬╟здм╝шдьд╞дддыд╬д╧бвFreeBSD д╚ Linux д╬д▀д╟д╣
+# QUASI88 ver 0.6.3 ф╗ехЙНуБлуБжф╜┐чФиуБЧуБжуБДуБЯуАБхПдуБДуГРуГ╝уВ╕уГзуГ│уБо MAME/XMAME уБо
+# уВ╡уВжуГ│уГЙхЗ║хКЫуВТф╜┐чФиуБЧуБЯуБДха┤хРИуБпуАБф╗еф╕ЛуБоуВ│уГбуГ│уГИуВвуВжуГИуВТхдЦуБЧуБжф╕ЛуБХуБДуАВ
+#	хЛХф╜ЬуБлх┐ЕшжБуБкуГкуВ╜уГ╝уВ╣уБМх░СуБкуВБуБиуБкуВКуБ╛уБЩуАВ
 
-#---------------------- FreeBSD
-# ARCH = freebsd
-#---------------------- Linux
-# ARCH = linux
-#---------------------- NetBSD
-# ARCH = netbsd
-#---------------------- OpenBSD
-# ARCH = openbsd
-#---------------------- Solaris / SunOS
-# ARCH = solaris
-#---------------------- QNX Neutrino (QNX4/QNX6)
-# ARCH = nto
-#---------------------- OpenStep on NeXT systems
-# ARCH = next
-#---------------------- OpenStep on Apple systems (Cocoa)
-ARCH = macosx
-#---------------------- IRIX ( with sound using the old AL (version 1) package)
-# ARCH = irix
-#---------------------- IRIX ( with sound using the al (IRIX 6.x) package)
-# ARCH = irix_al
-#---------------------- AIX ( with sound, you'll need the UMS and SOM lpp's installed ( under AIX4 ))
-# ARCH = aix
-#---------------------- BeOS on Intel
-# ARCH = beos
-#---------------------- generic UNIX, no sound
-# ARCH = generic
-
-
-
-# (X11)
-# е╡ежеєе╔е╟е╨еде╣д╬╗╪─ъ
-#	─╔▓├д╖д┐дде╟е╨еде╣дмдвдьд╨бве│есеєе╚евеже╚дЄ│░д╖д▐д╣бг
-#	ддд║дьдт╞░║ю│╬╟зд╡дьд╞ддд▐д╗дєбг
-
-# SOUND_ESOUND		= 1
-# SOUND_ALSA		= 1
-# SOUND_ARTS_TEIRA	= 1
-# SOUND_ARTS_SMOTEK	= 1
-# SOUND_SDL		= 1
-# SOUND_WAVEOUT		= 1
-
-
-
-# QUASI88 ver 0.6.3 ░╩┴░д╦д╞╗╚═╤д╖д╞ддд┐бв╕┼дде╨б╝е╕ечеєд╬ MAME/XMAME д╬
-# е╡ежеєе╔╜╨╬╧дЄ╗╚═╤д╖д┐дд╛ь╣чд╧бв░╩▓╝д╬е│есеєе╚евеже╚дЄ│░д╖д╞▓╝д╡ддбг
-#	╞░║юд╦╔м═╫д╩еъе╜б╝е╣дм╛пд╩дсд╚д╩дъд▐д╣бг
-
- USE_OLD_MAME_SOUND	= 1
+USE_OLD_MAME_SOUND	= 1
 
 
 
 #######################################################################
-# fmgen (FM Sound Generator) д╬└▀─ъ
+# fmgen (FM Sound Generator) уБошинхоЪ
 #######################################################################
 
-# cisc╗с║юд╬бвfmgen (FM Sound Generator) дЄ┴╚д▀╣■д▐д╩дд╛ь╣чбв░╩▓╝д╬╣╘дЄ
-# е│есеєе╚евеже╚д╖д╞▓╝д╡ддбг
+# ciscц░Пф╜ЬуБоуАБfmgen (FM Sound Generator) уВТч╡ДуБ┐ш╛╝уБ╛уБкуБДха┤хРИуАБф╗еф╕ЛуБошбМуВТ
+# уВ│уГбуГ│уГИуВвуВжуГИуБЧуБжф╕ЛуБХуБДуАВ
 
 USE_FMGEN	= 1
 
 
-# ├э░╒бк
-#	FM Sound Generator д╧ C++ д╦дшдъ╝┬┴їд╡дьд╞ддд▐д╣бг
-#	C++ д╬е│еєе╤едещд╬└▀─ъдЄ░╩▓╝д╟╣╘д╩д├д╞▓╝д╡ддбг
+# ц│ицДПя╝Б
+#	FM Sound Generator уБп C++ уБлуВИуВКхоЯшгЕуБХуВМуБжуБДуБ╛уБЩуАВ
+#	C++ уБоуВ│уГ│уГСуВдуГйуБошинхоЪуВТф╗еф╕ЛуБзшбМуБкуБгуБжф╕ЛуБХуБДуАВ
 # 
-# 	└▀─ъд╣д┘дн╣р╠▄д╧бвCXXбвCXXFLAGSбвCXXLIBS дкдшд╙ LD д╬─ъ╡┴д╟д╣бг
+# 	шинхоЪуБЩуБ╣уБНщаЕчЫоуБпуАБCXXуАБCXXFLAGSуАБCXXLIBS уБКуВИуБ│ LD уБохоЪч╛йуБзуБЩуАВ
 # 
 
 
 
 #######################################################################
-# SDLещеде╓ещеъд╬└▀─ъ
+# SDL2уГйуВдуГЦуГйуГкуБошинхоЪ
 #######################################################################
 
-# (X11/SDL/GTK)
-# ░╩▓╝д╬╛ь╣чбвSDLещеде╓ещеъдм╗╚═╤д╡дьд▐д╣бг
-#	бжSDL_VERSION дЄ┴к┬Єд╖д┐╛ь╣ч
-#	бжGTK_VERSION дЄ┴к┬Єд╖бвб╓USE_SOUND = 1б╫дЄ╗╪─ъд╖д┐╛ь╣ч
-#	бже╕ечеде╣е╞еге├епд╬└▀─ъд╟ б╓X11_JOYSTICK = joy_sdlб╫дЄ╗╪─ъд╖д┐╛ь╣ч
-#	бже╡ежеєе╔д╬└▀─ъд╟бвб╓SOUND_SDL = 1б╫дЄ╗╪─ъд╖д┐╛ь╣ч
-# д│д│д╟д╧бвsdl-config дЄ╝┬╣╘д╣дые│е▐еєе╔дЄ╗╪─ъд╖д╞дпд└д╡ддбг
-#	─╠╛яд╬OS д╬╛ь╣чбвsdl-config   д╬д▐д▐д╟┬ч╛ц╔╫д╩д╧д║д╟д╣бг
-#	FreeBSD  д╬╛ь╣чбвsdl12-config д╩д╔д╦еъе═б╝ерд╡дьд╞дддыд│д╚дмдвдъд▐д╣
+# sdl2-config уВТхоЯшбМуБЩуВЛуВ│уГЮуГ│уГЙуВТцМЗхоЪуБЧуБжуБПуБауБХуБДуАВ
 
-SDL_CONFIG	= sdl2-config
+SDL2_CONFIG	= sdl2-config
 
 
 
 #######################################################################
-# GTKещеде╓ещеъд╬└▀─ъ
+# уВ│уГ│уГСуВдуГлщЦвщАгуБошинхоЪ
 #######################################################################
 
-# (GTK)
-# GTK_VERSION дЄ┴к┬Єд╖д┐╛ь╣чд╬д▀бв░╩▓╝д╬└▀─ъдм╔м═╫д╟д╣бг
+# C уВ│уГ│уГСуВдуГйуБошинхоЪ
+#	gcc уАБ clang уБкуБйуВТцМЗхоЪуБЧуБжуБПуБауБХуБДуАВ
 
-GTK_CONFIG	= gtk-config
-
-
-
-#######################################################################
-# е│еєе╤едеы┤╪╧вд╬└▀─ъ
-#######################################################################
-
-# е│еєе╤едещд╬╗╪─ъ
-
-CC	= gcc
+CC	= cc
 
 
-# ╔м═╫д╦▒■д╕д╞бве│еєе╤едеыеке╫е╖ечеє (║╟┼м▓╜д╩д╔) дЄ╗╪─ъд╖д╞дпд└д╡дд
-#	gcc д╩дщбв -fomit-frame-pointer бв -fstrength-reduce бв -ffast-math бв
-#	-funroll-loops бв -fstrict-aliasing ┼∙дм─ъ╚╓д╬║╟┼м▓╜еке╫е╖ечеєд╟д╣бг
+# х┐ЕшжБуБлх┐ЬуБШуБжуАБуВ│уГ│уГСуВдуГлуВкуГЧуВ╖уГзуГ│ (цЬАщБйхМЦуБкуБй) уВТцМЗхоЪуБЧуБжуБПуБауБХуБД
+#	gcc уБкуВЙуАБ -fomit-frame-pointer уАБ -fstrength-reduce уАБ -ffast-math уАБ
+#	-funroll-loops уАБ -fstrict-aliasing чнЙуБМхоЪчХкуБоцЬАщБйхМЦуВкуГЧуВ╖уГзуГ│уБзуБЩуАВ
 #
-#	е│еєе╤едещд╦дшд├д╞д╧бвchar дЄ signed char д╚д▀д╩д╣╗╪─ъдм╔м═╫д╩╛ь╣чдм
-#	двдъд▐д╣бгPowerPC ╖╧д╬ gcc д╩д╔дмд╜джд╟д╣дмбвд│д╬╛ь╣чбв-fsigned-char 
-#	дЄ╗╪─ъд╖д▐д╣бг
+#	уВ│уГ│уГСуВдуГйуБлуВИуБгуБжуБпуАБchar уВТ signed char уБиуБ┐уБкуБЩцМЗхоЪуБМх┐ЕшжБуБкха┤хРИуБМ
+#	уБВуВКуБ╛уБЩуАВPowerPC ч│╗уБо gcc уБкуБйуБМуБЭуБЖуБзуБЩуБМуАБуБУуБоха┤хРИуАБ-fsigned-char 
+#	уВТцМЗхоЪуБЧуБ╛уБЩуАВ
 
-CFLAGS = -O2 -g
+CFLAGS = -O2
 
-# ╬удид╨ gcc & PowerPC д╬╛ь╣чбв░╩▓╝д╬е│есеєе╚евеже╚дЄ│░д╖д▐д╣бг
+# ф╛ЛуБИуБ░ gcc & PowerPC уБоха┤хРИуАБф╗еф╕ЛуБоуВ│уГбуГ│уГИуВвуВжуГИуВТхдЦуБЧуБ╛уБЩуАВ
 # CFLAGS += -fsigned-char
 
-# ╬удид╨ gcc д╟║╟┼м▓╜дЄд╖д┐дд╛ь╣чбв░╩▓╝д╬е│есеєе╚евеже╚дЄ│░д╖д▐д╣бг
+# ф╛ЛуБИуБ░ gcc уБзцЬАщБйхМЦуВТуБЧуБЯуБДха┤хРИуАБф╗еф╕ЛуБоуВ│уГбуГ│уГИуВвуВжуГИуВТхдЦуБЧуБ╛уБЩуАВ
 # CFLAGS += -fomit-frame-pointer -fstrength-reduce -funroll-loops -ffast-math
 
 
 
-# е│еєе╤едещд╦дшд├д╞д╧бведеєещедеє┤╪┐ЇдЄ╗╚джд│д╚дм╜╨═шд▐д╣бг
-#	░╩▓╝длдщбв┼м└┌д╩дтд╬дЄ░ьд─д└д▒╗╪─ъд╖д╞дпд└д╡ддбг
-#-------------------------------------------------- д╔дєд╩е│еєе╤едещд╟дтOK
+# уВ│уГ│уГСуВдуГйуБлуВИуБгуБжуБпуАБуВдуГ│уГйуВдуГ│щЦвцХ░уВТф╜┐уБЖуБУуБиуБМхЗ║цЭеуБ╛уБЩуАВ
+#	ф╗еф╕ЛуБЛуВЙуАБщБйхИЗуБкуВВуБоуВТф╕АуБдуБауБСцМЗхоЪуБЧуБжуБПуБауБХуБДуАВ
+
+# уБйуВУуБкуВ│уГ│уГСуВдуГйуБзуВВOK
 # USEINLINE	= '-DINLINE=static'
-#-------------------------------------------------- GCC д╬╛ь╣ч
+
+# GCC уБоха┤хРИ
 USEINLINE	= '-DINLINE=static __inline__'
-#-------------------------------------------------- Intel C++ е│еєе╤едещд╬╛ь╣ч
+
+# Intel C++ уВ│уГ│уГСуВдуГйуБоха┤хРИ (?)
 # USEINLINE	= '-DINLINE=static inline'
-#--------------------------------------------------
-
-
-# X11 ┤╪╧вд╬е╟егеьепе╚еъд╚ещеде╓ещеъдЄ╗╪─ъ
-
-# ░ь╔Їд╬е╖е╣е╞ер (?)
-# X11INC  	= -I/usr/include/X11
-# X11LIB  	= -L/usr/lib/X11
-
-# XFree86 д╬╛ь╣ч (?)
-# X11INC  	= -I/usr/X11R6/include
-# X11LIB  	= -L/usr/X11R6/lib
-
-# X.Org д╬╛ь╣ч
-X11INC  	= -I/usr/local/include
-X11LIB  	= -L/usr/local/lib
 
 
 
-
-
-# C++ е│еєе╤едещд╬└▀─ъ
+# C++ уВ│уГ│уГСуВдуГйщЦвщАгуБошинхоЪ
+#	fmgen уВТч╡ДуБ┐ш╛╝уБ╛уБкуБДха┤хРИуАБуБУуВМуВЙуБошинхоЪуБпф╕НшжБуБзуБЩуАВ
 #
-#	д│д╬└▀─ъдм╔м═╫д╩д╬д╧бв fmgen дЄ┴╚д▀╣■др╛ь╣чд╬д▀д╟д╣бг
-#	gcc д╧двдыд╬д╦ g++ дм╠╡дд╛ь╣чбвб╓CXX = gccб╫д╚д╖д╞д▀д╞дпд└д╡ддбг
+#	g++ уАБ clang++ уБкуБйуВТцМЗхоЪуБЧуБжуБПуБауБХуБДуАВ
+#	чТ░хвГуБлуВИуБгуБжуБпуАБ$(CC) уБихРМуБШ я╝И gcc уАБ clang уБкуБйя╝Й уБлуБЧуБ╛уБЩуАВ
 
-CXX	 = g++
-CXXFLAGS = $(CFLAGS)
+CXX	 = c++
+CXXFLAGS = -O2
 CXXLIBS	 = -lstdc++
 
 
-# еъеєелд╬└▀─ъ
-#	C++ е│еєе╤едещдЄ╗╚дж╛ь╣чбв┤─╢нд╦дшд├д╞д╧ $(CXX) д╚д╣ды╔м═╫дм
-#	двдыдлдтд╖дьд▐д╗дєбг
 
-LD	= $(CC) -Wl
+# уГкуГ│уВлуБошинхоЪ
+#	C++ уВ│уГ│уГСуВдуГйуВТф╜┐уБЖха┤хРИуАБчТ░хвГуБлуВИуБгуБжуБп $(CXX) уБиуБЩуВЛх┐ЕшжБуБМ
+#	уБВуВЛуБЛуВВуБЧуВМуБ╛уБЫуВУуАВ
+
+LD	= $(CC) -Wl,-s
 # LD	= $(CXX) -Wl,-s
 
 
+
 #######################################################################
-# едеєе╣е╚б╝еыд╬└▀─ъ
+# уВдуГ│уВ╣уГИуГ╝уГлуБошинхоЪ
 #######################################################################
 
-# едеєе╣е╚б╝еы└ше╟егеьепе╚еъд╬└▀─ъ
+# уВдуГ│уВ╣уГИуГ╝уГлхЕИуГЗуВгуГмуВпуГИуГкуБошинхоЪ
 #
 
 BINDIR = /usr/local/bin
@@ -374,183 +232,47 @@ BINDIR = /usr/local/bin
 
 ###############################################################################
 #
-# ╩╘╜╕бвдкд─длдьд╡д▐д╟д╖д┐бг
-# д│дь░╩╣▀д╧бв╩╤╣╣╔╘═╫д╬д╧д║д╟д╣бг┬┐╩мбжбжбж
+# ч╖ищЫЖуАБуБКуБдуБЛуВМуБХуБ╛уБзуБЧуБЯуАВ
+# уБУуВМф╗ещЩНуБпуАБхдЙцЫ┤ф╕НшжБуБоуБпуБЪуБзуБЩуАВхдЪхИЖуГ╗уГ╗уГ╗
 #
 ###############################################################################
 
-######## ╝┬╕│двдьд│дь
+######## хоЯщиУуБВуВМуБУуВМ
 
-# е│есеєе╚евеже╚д╣дыд╚бвд╜д╬ bpp д╬ X┤─╢нд╦дкддд╞╞░║ю╔╘╟╜д╦д╩ды╝┬╕│
-
-X11_SUPPORT_8BPP	= 1
-X11_SUPPORT_16BPP	= 1
-X11_SUPPORT_32BPP	= 1
-
-# е│есеєе╚евеже╚д╣дыд╚бв╟▄е╡еде║д╟д╬╔╜╝идмд╟днд╩дпд╩ды╝┬╕│
+# уВ│уГбуГ│уГИуВвуВжуГИуБЩуВЛуБиуАБхАНуВ╡уВдуВ║уБзуБошбичд║уБМуБзуБНуБкуБПуБкуВЛхоЯщиУ
 
 SUPPORT_DOUBLE		= 1
 
-# е│есеєе╚евеже╚д╣дыд╚бвutf-8 д╬е╡е▌б╝е╚дмд╩дпд╩ды╝┬╕│
-
-SUPPORT_UTF8		= 1
-
-# е└е▀б╝е│еєе╤едеыд╬╝┬╕│
-#	X11_VERSION, SDL_VERSION, GTK_VERSION д╬ддд║дьдт─ъ╡┴д╖д╩дд╛ь╣чбв
-#	src/MINI ░╩▓╝д╬е╜б╝е╣дЄ╗╚д├д╞бве└е▀б╝д╬е│еєе╤едеыдм╝┬╣╘д╡дьдыбг
-#	е╡ежеєе╔╠╡д╖д╦д╣дыдлбв 'ARCH = generic' дЄ╗╪─ъд╖д╞дкдпд│д╚бг
-
 
 
 #######################################################################
 #
 #######################################################################
 
-# едеєепеыб╝е╔е╟егеьепе╚еъ
+# уВ╜уГ╝уВ╣уВ│уГ╝уГЙуГЗуВгуГмуВпуГИуГк
 
-CFLAGS += -Isrc
+SRCDIR	= src
+
+
+# уВдуГ│уВпуГлуГ╝уГЙуГЗуВгуГмуВпуГИуГк
+
+CFLAGS   += -I$(SRCDIR)
+CXXFLAGS += -I$(SRCDIR)
 
 
 #
-# е╨б╝е╕ечеє╦шд╬└▀─ъ
+# SDL2уГРуГ╝уВ╕уГзуГ│уБзуБошинхоЪ
 #
 
-ifdef	X11_VERSION
+CFLAGS   += -I$(SRCDIR)/FUNIX -I$(SRCDIR)/SDL2 `$(SDL2_CONFIG) --cflags`
+CXXFLAGS += -I$(SRCDIR)/FUNIX -I$(SRCDIR)/SDL2 `$(SDL2_CONFIG) --cflags`
+LIBS     +=                                    `$(SDL2_CONFIG) --libs`
 
-# X11 е╨б╝е╕ечеєд╟д╬└▀─ъ
-
-CFLAGS += -Isrc/FUNIX -Isrc/X11 $(X11INC) 
-LIBS   += $(X11LIB) -lX11 -lXext
-
-# X11е╨б╝е╕ечеєд╬╔╜╝ид▐дядъ
-
-ifdef	X11_MITSHM
-CFLAGS += -DMITSHM 
-endif
-
-ifdef	X11_DGA
-CFLAGS += -DUSE_DGA
-LIBS   += -lXxf86dga -lXxf86vm
-endif
-
-ifdef	X11_XV
-CFLAGS += -DUSE_XV
-LIBS   += -lXv
-endif
-
-ifdef	X11_SUPPORT_8BPP
-CFLAGS += -DSUPPORT_8BPP
-endif
-ifdef	X11_SUPPORT_16BPP
-CFLAGS += -DSUPPORT_16BPP
-endif
-ifdef	X11_SUPPORT_32BPP
-CFLAGS += -DSUPPORT_32BPP
-endif
-
-# X11е╨б╝е╕ечеєд╟д╬е╕ечеде╣е╞еге├еп└▀─ъ
-
-ifeq ($(X11_JOYSTICK),joy_sdl)
-
-CFLAGS += -DJOY_SDL `$(SDL_CONFIG) --cflags`
-LIBS   +=           `$(SDL_CONFIG) --libs`
-
-else
-
-ifeq ($(X11_JOYSTICK),joy_linux_usb)
-CFLAGS += -DJOY_LINUX_USB
-else
-
-ifeq ($(X11_JOYSTICK),joy_bsd_usb)
-
-CFLAGS += -DJOY_BSD_USB
-
-ifeq ($(shell test -f /usr/include/usbhid.h && echo have_usbhid), have_usbhid)
-CFLAGS += -DHAVE_USBHID_H
-LIBS   += -lusbhid
-else
-ifeq ($(shell test -f /usr/include/libusbhid.h && echo have_libusbhid), have_libusbhid)
-CFLAGS += -DHAVE_LIBUSBHID_H
-LIBS   += -lusbhid
-else
-LIBS   += -lusb
-endif
-endif
-
-else
-CFLAGS += -DJOY_NOTHING
-endif
-
-endif
-endif
-
-# X11е╨б╝е╕ечеєд╟д╬╗и┬┐д╩└▀─ъ
-
-ifdef	X11_LSB_FIRST
-CFLAGS += -DLSB_FIRST
-endif
-
-ifdef	X11_HAVE_LONG_LONG
-CFLAGS += -DHAVE_LONG_LONG
-endif
-
-ifdef	X11_HAVE_GETTIMEOFDAY
-CFLAGS += -DHAVE_GETTIMEOFDAY
-endif
-
-ifdef	HAVE_SELECT
-CFLAGS += -DHAVE_SELECT
-endif
-
-
-CFLAGS += -DQUASI88_X11
+CFLAGS += -DQUASI88_SDL2
 
 
 
-else
-ifdef	SDL_VERSION
-
-# SDLе╨б╝е╕ечеєд╟д╬└▀─ъ
-
-CFLAGS += -Isrc/FUNIX -Isrc/SDL `$(SDL_CONFIG) --cflags`
-LIBS   +=                       `$(SDL_CONFIG) --libs`
-
-CFLAGS += -DQUASI88_SDL
-
-else
-ifdef 	SDL2_VERSION
-
-CFLAGS += -Isrc/FUNIX -Isrc/SDL2 -I/Library/Frameworks/SDL2.framework/Headers
-LIBS   +=                       -F/Library/Frameworks -framework SDL2
-
-CFLAGS += -DQUASI88_SDL
-
-else
-ifdef	GTK_VERSION
-
-# GTKе╨б╝е╕ечеєд╟д╬└▀─ъ
-
-CFLAGS += -Isrc/FUNIX -Isrc/GTK `$(GTK_CONFIG) --cflags`
-LIBS   +=                       `$(GTK_CONFIG) --libs`
-
-CFLAGS += -DQUASI88_GTK
-
-else
-
-# MINIе╨б╝е╕ечеєд╟д╬└▀─ъ
-
-CFLAGS +=  -Isrc/FDUMMY -Isrc/MINI
-
-CFLAGS += -DQUASI88_MINI
-
-endif
-endif
-endif
-endif
-
-
-
-# ете╦е┐б╝етб╝е╔═н╕·╗■д╬└▀─ъ
+# уГвуГЛуВ┐уГ╝уГвуГ╝уГЙцЬЙхК╣цЩВуБошинхоЪ
 
 
 ifdef	USE_MONITOR
@@ -572,14 +294,10 @@ endif
 endif
 
 
-# д╜д╬┬╛
+# уБЭуБоф╗Ц
 
 ifdef	SUPPORT_DOUBLE
 CFLAGS += -DSUPPORT_DOUBLE
-endif
-
-ifdef	SUPPORT_UTF8
-CFLAGS += -DSUPPORT_UTF8
 endif
 
 ifdef	USE_SSS_CMD
@@ -595,20 +313,20 @@ endif
 
 
 #######################################################################
-# е╡ежеєе╔дм═н╕·д╦д╩д├д╞ддды╛ь╣чд╬│╞╝я─ъ╡┴
-#	д│д│д╟д╧бв
+# уВ╡уВжуГ│уГЙуБМцЬЙхК╣уБлуБкуБгуБжуБДуВЛха┤хРИуБохРДчиохоЪч╛й
+#	уБУуБУуБзуБпуАБ
 #		SOUND_OBJS
 #		SOUND_LIBS
 #		SOUND_CFLAGS
-#	дм─ъ╡┴д╡дьдыбг
+#	уБМхоЪч╛йуБХуВМуВЛуАВ
 #######################################################################
 ifdef	USE_SOUND
 
 #
-# е╡ежеєе╔═н╕·╗■д╬бв─╔▓├еке╓е╕езепе╚ ( OS░═┬╕╔Ї + ╢ж═╤╔Ї )
+# уВ╡уВжуГ│уГЙцЬЙхК╣цЩВуБоуАБш┐╜хКауВкуГЦуВ╕уВзуВпуГИ ( OSф╛ЭхнШщГи + хЕ▒чФищГи )
 #
 
-#### е╟егеьепе╚еъ
+#### уГЗуВгуГмуВпуГИуГк
 
 ifdef	USE_OLD_MAME_SOUND
 SNDDRV_DIR	= snddrv-old
@@ -617,171 +335,44 @@ SNDDRV_DIR	= snddrv
 endif
 
 SD_Q88_DIR	= $(SNDDRV_DIR)/quasi88
-SD_X11_DIR	= $(SNDDRV_DIR)/quasi88/X11
 SD_SDL_DIR	= $(SNDDRV_DIR)/quasi88/SDL
 
-SRC_DIR		= $(SNDDRV_DIR)/src
-SOUND_DIR	= $(SNDDRV_DIR)/src/sound
-UNIX_DIR	= $(SNDDRV_DIR)/src/unix
-SYSDEP_DIR	= $(SNDDRV_DIR)/src/unix/sysdep
-DSP_DIR		= $(SNDDRV_DIR)/src/unix/sysdep/dsp-drivers
-MIXER_DIR	= $(SNDDRV_DIR)/src/unix/sysdep/mixer-drivers
+XM_SRC_DIR	= $(SNDDRV_DIR)/src
+XM_SOUND_DIR	= $(SNDDRV_DIR)/src/sound
 
 
-#### еке╓е╕езепе╚
+#### уВкуГЦуВ╕уВзуВпуГИ
 
 SOUND_OBJS_BASE	= $(SD_Q88_DIR)/mame-quasi88.o	\
 		  $(SD_Q88_DIR)/beepintf.o	\
 		  $(SD_Q88_DIR)/beep.o		\
-		  $(SRC_DIR)/driver.o		\
-		  $(SRC_DIR)/restrack.o		\
-		  $(SRC_DIR)/sound.o		\
-		  $(SRC_DIR)/sndintrf.o		\
-		  $(SRC_DIR)/streams.o		\
-		  $(SOUND_DIR)/flt_vol.o	\
-		  $(SOUND_DIR)/flt_rc.o		\
-		  $(SOUND_DIR)/wavwrite.o	\
-		  $(SOUND_DIR)/2203intf.o	\
-		  $(SOUND_DIR)/2608intf.o	\
-		  $(SOUND_DIR)/ay8910.o		\
-		  $(SOUND_DIR)/fm.o		\
-		  $(SOUND_DIR)/ymdeltat.o	\
-		  $(SOUND_DIR)/samples.o
-
-SOUND_OBJS_UNIX	= $(UNIX_DIR)/sound.o			\
-		  $(SYSDEP_DIR)/rc.o			\
-		  $(SYSDEP_DIR)/misc.o			\
-		  $(SYSDEP_DIR)/plugin_manager.o	\
-		  $(SYSDEP_DIR)/sysdep_dsp.o		\
-		  $(SYSDEP_DIR)/sysdep_mixer.o		\
-		  $(SYSDEP_DIR)/sysdep_sound_stream.o
-
-SOUND_OBJS.linux   = $(DSP_DIR)/oss.o $(MIXER_DIR)/oss.o
-SOUND_OBJS.freebsd = $(DSP_DIR)/oss.o $(MIXER_DIR)/oss.o
-SOUND_OBJS.netbsd  = $(DSP_DIR)/netbsd.o
-#SOUND_OBJS.openbsd = $(DSP_DIR)/oss.o $(MIXER_DIR)/oss.o
-SOUND_OBJS.openbsd = $(DSP_DIR)/netbsd.o 
-SOUND_OBJS.solaris = $(DSP_DIR)/solaris.o $(MIXER_DIR)/solaris.o
-SOUND_OBJS.next    = $(DSP_DIR)/soundkit.o
-SOUND_OBJS.macosx  = $(DSP_DIR)/coreaudio.o
-SOUND_OBJS.nto     = $(DSP_DIR)/io-audio.o
-SOUND_OBJS.irix    = $(DSP_DIR)/irix.o
-SOUND_OBJS.irix_al = $(DSP_DIR)/irix_al.o
-SOUND_OBJS.beos    =
-SOUND_OBJS.generic =
-#these need to be converted to plugins first
-#SOUND_OBJS.aix     = $(DSP_DIR)/aix.o
+		  $(XM_SRC_DIR)/driver.o	\
+		  $(XM_SRC_DIR)/restrack.o	\
+		  $(XM_SRC_DIR)/sound.o		\
+		  $(XM_SRC_DIR)/sndintrf.o	\
+		  $(XM_SRC_DIR)/streams.o	\
+		  $(XM_SOUND_DIR)/flt_vol.o	\
+		  $(XM_SOUND_DIR)/flt_rc.o	\
+		  $(XM_SOUND_DIR)/wavwrite.o	\
+		  $(XM_SOUND_DIR)/2203intf.o	\
+		  $(XM_SOUND_DIR)/2608intf.o	\
+		  $(XM_SOUND_DIR)/ay8910.o	\
+		  $(XM_SOUND_DIR)/fm.o		\
+		  $(XM_SOUND_DIR)/ymdeltat.o	\
+		  $(XM_SOUND_DIR)/samples.o
 
 
-#### Cе╒еще░
+#### CуГХуГйуВ░
 
-CFLAGS           += -DUSE_SOUND
+CFLAGS   += -DUSE_SOUND
+CXXFLAGS += -DUSE_SOUND
 
-SOUND_CFLAGS      = -DPI=M_PI -I$(SRCDIR)/$(SNDDRV_DIR) -I$(SRCDIR)/$(SD_Q88_DIR) -I$(SRCDIR)/$(SRC_DIR) -I$(SRCDIR)/$(SOUND_DIR) -Wno-missing-declarations -Wno-unused
-
-SOUND_CFLAGS_UNIX = -I$(SRCDIR)/$(SD_X11_DIR) -I$(SRCDIR)/$(UNIX_DIR) -I$(SRCDIR)/$(SYSDEP_DIR) -I$(SRCDIR)/$(DSP_DIR) -I$(SRCDIR)/$(MIXER_DIR)
-
-
-#### е╨б╝е╕ечеє╦шд╬└▀─ъ
-
-ifdef	X11_VERSION
-
-#
-# X11 е╨б╝е╕ечеєд╟д╬е╡ежеєе╔└▀─ъ
-#
-
-SOUND_OBJS	= $(SOUND_OBJS_BASE)		\
-		  $(SD_X11_DIR)/audio.o		\
-		  $(SOUND_OBJS_UNIX)		\
-		  $(SOUND_OBJS.$(ARCH))
+SOUND_CFLAGS      = -DPI=M_PI -I$(SRCDIR)/$(SNDDRV_DIR) -I$(SRCDIR)/$(SD_Q88_DIR) -I$(SRCDIR)/$(XM_SRC_DIR) -I$(SRCDIR)/$(XM_SOUND_DIR)
+SOUND_CXXFLAGS    =           -I$(SRCDIR)/$(SNDDRV_DIR) -I$(SRCDIR)/$(SD_Q88_DIR) -I$(SRCDIR)/$(XM_SRC_DIR) -I$(SRCDIR)/$(XM_SOUND_DIR)
 
 
 #
-# е╡ежеєе╔═н╕·╗■д╬е│еєе╤едеыеке╫е╖ечеє
-#	-DHAVE_SNPRINTF, -DHAVE_VSNPRINTF д╧╔╘═╫д╬д╧д║б─
-
-CFLAGS.linux      = -DSYSDEP_DSP_OSS -DSYSDEP_MIXER_OSS -DHAVE_SNPRINTF -DHAVE_VSNPRINTF
-CFLAGS.freebsd    = -DSYSDEP_DSP_OSS -DSYSDEP_MIXER_OSS -DHAVE_SNPRINTF -DHAVE_VSNPRINTF
-CFLAGS.netbsd     = -DSYSDEP_DSP_NETBSD -DHAVE_SNPRINTF -DHAVE_VSNPRINTF
-CFLAGS.openbsd    = -DSYSDEP_DSP_NETBSD -DHAVE_SNPRINTF -DHAVE_VSNPRINTF
-CFLAGS.solaris    = -DSYSDEP_DSP_SOLARIS -DSYSDEP_MIXER_SOLARIS
-CFLAGS.next       = -DSYSDEP_DSP_SOUNDKIT -DBSD43
-CFLAGS.macosx     = -DSYSDEP_DSP_COREAUDIO
-CFLAGS.nto        = -DSYSDEP_DSP_ALSA -DSYSDEP_MIXER_ALSA
-CFLAGS.irix       = -DSYSDEP_DSP_IRIX -DHAVE_SNPRINTF
-CFLAGS.irix_al    = -DSYSDEP_DSP_IRIX -DHAVE_SNPRINTF
-CFLAGS.beos       = `$(SDL_CONFIG) --cflags` -DSYSDEP_DSP_SDL
-CFLAGS.generic    =
-#these need to be converted to plugins first
-#CFLAGS.aix        = -DSYSDEP_DSP_AIX -I/usr/include/UMS -I/usr/lpp/som/include
-
-SOUND_CFLAGS	+= -D__ARCH_$(ARCH) $(CFLAGS.$(ARCH)) $(SOUND_CFLAGS_UNIX)
-
-
-#
-# е╡ежеєе╔═н╕·╗■д╬ещеде╓ещеъ╗╪─ъ
-#	┤╪╖╕╠╡ддд╬дт┤▐д▐дьд╞ддд╜джб─б─б─
-
-LIBS.solaris       = -lnsl -lsocket
-LIBS.irix          = -laudio
-LIBS.irix_al       = -laudio
-LIBS.aix           = -lUMSobj
-LIBS.next	   = -framework SoundKit
-LIBS.macosx	   = -framework CoreAudio
-#LIBS.macosx	   = -framework AudioUnit -framework CoreServices
-#LIBS.openbsd       = -lossaudio
-LIBS.nto	   = -lsocket -lasound
-LIBS.beos          = `$(SDL_CONFIG) --libs`
-
-SOUND_LIBS	= -lm $(LIBS.$(ARCH))
-
-
-#
-# ─╔▓├е╡ежеєе╔е╟е╨еде╣╗╪─ъ╗■д╬бв─╔▓├└▀─ъ
-#
-
-ifdef SOUND_ESOUND
-SOUND_CFLAGS += -DSYSDEP_DSP_ESOUND `esd-config --cflags`
-SOUND_LIBS   += `esd-config --libs`
-SOUND_OBJS   += $(DSP_DIR)/esound.o
-endif
-
-ifdef SOUND_ALSA
-SOUND_CFLAGS += -DSYSDEP_DSP_ALSA -DSYSDEP_MIXER_ALSA
-SOUND_LIBS   += -lasound
-SOUND_OBJS   += $(DSP_DIR)/alsa.o $(MIXER_DIR)/alsa.o
-endif
-
-ifdef SOUND_ARTS_TEIRA
-SOUND_CFLAGS += -DSYSDEP_DSP_ARTS_TEIRA `artsc-config --cflags`
-SOUND_LIBS   += `artsc-config --libs`
-SOUND_OBJS   += $(DSP_DIR)/artssound.o
-endif
-
-ifdef SOUND_ARTS_SMOTEK
-SOUND_CFLAGS += -DSYSDEP_DSP_ARTS_SMOTEK `artsc-config --cflags`
-SOUND_LIBS   += `artsc-config --libs`
-SOUND_OBJS   += $(DSP_DIR)/arts.o
-endif
-
-ifdef SOUND_SDL
-SOUND_CFLAGS += -DSYSDEP_DSP_SDL `$(SDL_CONFIG) --cflags`
-SOUND_LIBS   += `$(SDL_CONFIG) --libs`
-SOUND_OBJS   += $(DSP_DIR)/sdl.o
-endif
-
-ifdef SOUND_WAVEOUT
-SOUND_CFLAGS += -DSYSDEP_DSP_WAVEOUT
-SOUND_OBJS   += $(DSP_DIR)/waveout.o
-endif
-
-
-
-else
-ifdef	SDL_VERSION
-
-#
-# SDL е╨б╝е╕ечеєд╟д╬е╡ежеєе╔└▀─ъ
+# SDL2 уГРуГ╝уВ╕уГзуГ│уБзуБоуВ╡уВжуГ│уГЙшинхоЪ
 #
 
 SOUND_OBJS	= $(SOUND_OBJS_BASE)		\
@@ -789,63 +380,13 @@ SOUND_OBJS	= $(SOUND_OBJS_BASE)		\
 		  $(SD_SDL_DIR)/sdl.o
 
 SOUND_CFLAGS	+= -I$(SRCDIR)/$(SD_SDL_DIR) -DSYSDEP_DSP_SDL
-
-else
-ifdef	SDL2_VERSION
-
-#
-# SDL е╨б╝е╕ечеєд╟д╬е╡ежеєе╔└▀─ъ
-#
-
-SOUND_OBJS	= $(SOUND_OBJS_BASE)		\
-		  $(SD_SDL_DIR)/audio.o		\
-		  $(SD_SDL_DIR)/sdl.o
-
-SOUND_CFLAGS	+= -I$(SRCDIR)/$(SD_SDL_DIR) -DSYSDEP_DSP_SDL
-
-else
-ifdef	GTK_VERSION
-
-#
-# GTK е╨б╝е╕ечеєд╟д╬е╡ежеєе╔└▀─ъ
-#	SDL д╦д╞╠─дщд╣д│д╚д╦д╣ды
-
-SOUND_OBJS	= $(SOUND_OBJS_BASE)		\
-		  $(SD_SDL_DIR)/audio.o		\
-		  $(SD_SDL_DIR)/sdl.o
-SOUND_CFLAGS	+= -I$(SRCDIR)/$(SD_SDL_DIR) -DSYSDEP_DSP_SDL `$(SDL_CONFIG) --cflags`
-SOUND_LIBS	+= `$(SDL_CONFIG) --libs`
-
-
-#	OSSд╟╠─дщд╜джд╚д╖д┐дмбве╬еде║д└дщд▒д╟джд▐дп╠─дщд╩ддб─б─
-
-#SOUND_OBJS	= $(SOUND_OBJS_BASE)		\
-#		  $(SD_X11_DIR)/audio.o		\
-#		  $(SOUND_OBJS_UNIX)		\
-#		  $(SOUND_OBJS.$(ARCH))
-#SOUND_CFLAGS	+= -D__ARCH_$(ARCH) -DSYSDEP_DSP_OSS -DSYSDEP_MIXER_OSS -DHAVE_SNPRINTF -DHAVE_VSNPRINTF $(SOUND_CFLAGS_UNIX)
-#SOUND_LIBS	= -lm
-
-else
-
-#
-# MINI е╨б╝е╕ечеєд╟д╬е╡ежеєе╔└▀─ъ
-#	е│еєе╤едеы╕б╛┌д╬д▀бг▓╗д╧╜╨д╩дд
-
-SOUND_OBJS	= $(SOUND_OBJS_BASE)	\
-		  MINI/audio.o
-#SOUND_CFLAGS	+=
+SOUND_CXXFLAGS	+= -I$(SRCDIR)/$(SD_SDL_DIR)
 SOUND_LIBS	= -lm
 
-endif
-endif
-endif
-endif
 
 
 
-
-#### fmgen ╗╪─ъ╗■д╬└▀─ъ
+#### fmgen цМЗхоЪцЩВуБошинхоЪ
 
 ifdef	USE_FMGEN
 
@@ -858,8 +399,10 @@ FMGEN_OBJ	= $(SD_Q88_DIR)/2203fmgen.o	\
 		  $(FMGEN_DIR)/psg.o
 
 CFLAGS		+= -DUSE_FMGEN
+CXXFLAGS	+= -DUSE_FMGEN
 
 SOUND_CFLAGS	+= -I$(SRCDIR)/$(FMGEN_DIR)
+SOUND_CXXFLAGS	+= -I$(SRCDIR)/$(FMGEN_DIR)
 
 SOUND_OBJS	+= $(FMGEN_OBJ)
 
@@ -876,43 +419,9 @@ endif
 #######################################################################
 
 
-ifdef	X11_VERSION
 PROGRAM = quasi88
-else
-ifdef	SDL_VERSION
-PROGRAM = quasi88.sdl
-else
-ifdef	SDL2_VERSION
-PROGRAM = quasi88.sdl2
-else
-ifdef	GTK_VERSION
-PROGRAM = quasi88.gtk
-else
-PROGRAM = quasi88.mini
-endif
-endif
-endif
 
-
-
-ifdef	X11_VERSION
-OBJECT = X11/graph.o X11/wait.o X11/event.o X11/joystick.o X11/main.o FUNIX/file-op.o
-else
-ifdef	SDL_VERSION
-OBJECT = SDL/graph.o SDL/wait.o SDL/event.o SDL/main.o FUNIX/file-op.o
-else
-ifdef	SDL2_VERSION
 OBJECT = SDL2/graph.o SDL2/wait.o SDL2/event.o SDL2/main.o FUNIX/file-op.o
-else
-ifdef	GTK_VERSION
-OBJECT = GTK/graph.o GTK/wait.o GTK/event.o GTK/main.o GTK/menubar.o FUNIX/file-op.o
-else
-OBJECT = MINI/graph.o MINI/wait.o MINI/event.o MINI/main.o FDUMMY/file-op.o
-endif
-endif
-endif
-endif
-
 
 OBJECT += quasi88.o emu.o memory.o status.o getconf.o \
 	  pc88main.o crtcdmac.o soundbd.o pio.o screen.o intr.o \
@@ -923,48 +432,25 @@ OBJECT += quasi88.o emu.o memory.o status.o getconf.o \
 	  screen-8bpp.o screen-16bpp.o screen-32bpp.o screen-snapshot.o \
 	  $(SOUND_OBJS)
 
-CFLAGS += -DROM_DIR='"$(ROMDIR)"' -DDISK_DIR='"$(DISKDIR)"' \
-	  -DTAPE_DIR='"$(TAPEDIR)"' $(USEINLINE) -DCLIB_DECL= 
-
-CXXFLAGS += $(CFLAGS)
+CFLAGS   += -DROM_DIR='"$(ROMDIR)"' -DDISK_DIR='"$(DISKDIR)"' \
+	    -DTAPE_DIR='"$(TAPEDIR)"' -DSNAP_DIR='"$(SNAPDIR)"' \
+	    -DSTATE_DIR='"$(STATEDIR)"' -DL_CFG_DIR='"$(LCFGDIR)"' \
+	    -DG_CFG_DIR='"$(GCFGDIR)"' $(USEINLINE) -DCLIB_DECL= 
+CXXFLAGS += -DCLIB_DECL= 
 
 LIBS   += $(SOUND_LIBS)
 
 ###
 
-SRCDIR		= src
-
-ifdef	X11_VERSION
 OBJDIR		= obj
-OBJDIRS		+= $(OBJDIR) $(OBJDIR)/X11 $(OBJDIR)/FUNIX
-else
-ifdef	SDL_VERSION
-OBJDIR		= obj.sdl
-OBJDIRS		+= $(OBJDIR) $(OBJDIR)/SDL $(OBJDIR)/FUNIX
-else
-ifdef	SDL2_VERSION
-OBJDIR		= obj.sdl2
-OBJDIRS		+= $(OBJDIR) $(OBJDIR)/SDL2 $(OBJDIR)/FUNIX
-else
-ifdef	GTK_VERSION
-OBJDIR		= obj.gtk
-OBJDIRS		+= $(OBJDIR) $(OBJDIR)/GTK $(OBJDIR)/FUNIX
-else
-OBJDIR		= obj.mini
-OBJDIRS		+= $(OBJDIR) $(OBJDIR)/MINI $(OBJDIR)/FDUMMY
-endif
-endif
-endif
-endif
-endif
 
+OBJDIRS		+= $(OBJDIR) $(OBJDIR)/SDL2 $(OBJDIR)/FUNIX
 OBJDIRS		+= $(addprefix $(OBJDIR)/, \
 		  	$(SNDDRV_DIR) $(FMGEN_DIR) \
-		  	$(SD_Q88_DIR) $(SD_X11_DIR) $(SD_SDL_DIR) \
-			$(SRC_DIR) $(SOUND_DIR) $(UNIX_DIR) \
-			$(SYSDEP_DIR) $(DSP_DIR) $(MIXER_DIR) )
+		  	$(SD_Q88_DIR) $(SD_SDL_DIR) \
+			$(XM_SRC_DIR) $(XM_SOUND_DIR))
 
-OBJECTS		= $(addprefix $(OBJDIR)/, $(OBJECT) )
+OBJECTS		= $(addprefix $(OBJDIR)/, $(OBJECT))
 
 
 
@@ -980,30 +466,30 @@ $(PROGRAM):	$(OBJECTS)
 
 
 $(OBJDIR)/$(SNDDRV_DIR)/%.o: $(SRCDIR)/$(SNDDRV_DIR)/%.c
-		$(CC) $(CFLAGS) $(SOUND_CFLAGS) -o $@ -c $<
+		$(CC) $(CFLAGS) $(SOUND_CFLAGS) $(DEBUG_CFLAGS) -o $@ -c $<
 
 $(OBJDIR)/$(SNDDRV_DIR)/%.o: $(SRCDIR)/$(SNDDRV_DIR)/%.m
-		$(CC) $(CFLAGS) $(SOUND_CFLAGS) -o $@ -c $<
+		$(CC) $(CFLAGS) $(SOUND_CFLAGS) $(DEBUG_CFLAGS) -o $@ -c $<
 
 $(OBJDIR)/$(SNDDRV_DIR)/%.o: $(SRCDIR)/$(SNDDRV_DIR)/%.cpp
-		$(CXX) $(CXXFLAGS) $(SOUND_CFLAGS) -o $@ -c $<
+		$(CXX) $(CXXFLAGS) $(SOUND_CXXFLAGS) $(DEBUG_CXXFLAGS) -o $@ -c $<
 
 $(OBJDIR)/$(FMGEN_DIR)/%.o: $(SRCDIR)/$(FMGEN_DIR)/%.cpp
-		$(CXX) $(CXXFLAGS) $(SOUND_CFLAGS) -o $@ -c $<
+		$(CXX) $(CXXFLAGS) $(SOUND_CXXFLAGS) $(DEBUG_CXXFLAGS) -o $@ -c $<
 
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.c
-		$(CC) $(CFLAGS) -o $@ -c $<
+		$(CC) $(CFLAGS) $(DEBUG_CFLAGS) -o $@ -c $<
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.m
-		$(CC) $(CFLAGS) -o $@ -c $<
+		$(CC) $(CFLAGS) $(DEBUG_CFLAGS) -o $@ -c $<
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.cpp
-		$(CXX) $(CXXFLAGS) -o $@ -c $<
+		$(CXX) $(CXXFLAGS) $(DEBUG_CXXFLAGS) -o $@ -c $<
 
 
 $(OBJDIR)/%.s: $(SRCDIR)/%.c
-		$(CC) $(CFLAGS) $(SOUND_CFLAGS) -o $@ -S $<
+		$(CC) $(CFLAGS) $(SOUND_CFLAGS) $(DEBUG_CFLAGS) -o $@ -S $<
 
 
 clean:
@@ -1014,27 +500,12 @@ debug:
 
 
 #
-# едеєе╣е╚б╝еыд╦┤╪д╣ды└▀─ъ
+# уВдуГ│уВ╣уГИуГ╝уГлуБлщЦвуБЩуВЛшинхоЪ
 #
 
-INSTALL_TARGET = install-nosuid
-ifdef	X11_VERSION
-ifdef	X11_DGA
-INSTALL_TARGET = install-suid
-endif
-endif
-
-
-install:	$(INSTALL_TARGET)
-
-install-nosuid:
+install:
 		@echo installing binaries under $(BINDIR)...
-		@cp $(PROGRAM) $(BINDIR)
-
-install-suid:
-		@echo installing binaries under $(BINDIR)...
-		@cp $(PROGRAM) $(BINDIR)
-		@chmod 4555 $(BINDIR)/$(PROGRAM)
+		@cp $(PROGRAM) $(BINDIR)/
 
 
 #
@@ -1043,26 +514,27 @@ install-suid:
 
 
 #
-# е╒ебедеыд╬░═┬╕┤╪╖╕д╬╣╣┐╖
+# уГХуВбуВдуГлуБоф╛ЭхнШщЦвф┐ВуБоцЫ┤цЦ░
 #
-#	make depend дЄд╣дьд╨бв Makefile.depend дм└╕└о(╣╣┐╖)д╡дьд▐д╣бг
+#	make depend уВТуБЩуВМуБ░уАБ Makefile.depend уБМчФЯцИР(цЫ┤цЦ░)уБХуВМуБ╛уБЩуАВ
+#	(C уВ│уГ│уГСуВдуГйуБошинхоЪуБз gcc уВТцМЗхоЪуБЧуБжуБКуБПх┐ЕшжБуБМуБВуВКуБ╛уБЩ)
 #
 
-SOURCES		= $(subst $(OBJDIR)/, src/, $(OBJECTS) )
-SOURCES		:= $(patsubst %.o, %.c, $(SOURCES) )
-SOURCES		:= $(patsubst src/fmgen/%.c, src/fmgen/%.cpp, $(SOURCES) )
-SOURCES		:= $(subst src/snddrv/quasi88/2203fmgen.c, src/snddrv/quasi88/2203fmgen.cpp, $(SOURCES) )
-SOURCES		:= $(subst src/snddrv/quasi88/2608fmgen.c, src/snddrv/quasi88/2608fmgen.cpp, $(SOURCES) )
+SOURCES		= $(subst $(OBJDIR)/, $(SRCDIR)/, $(OBJECTS))
+SOURCES		:= $(patsubst %.o, %.c, $(SOURCES))
+SOURCES		:= $(patsubst $(SRCDIR)/fmgen/%.c, $(SRCDIR)/fmgen/%.cpp, $(SOURCES))
+SOURCES		:= $(subst $(SRCDIR)/snddrv/quasi88/2203fmgen.c, $(SRCDIR)/snddrv/quasi88/2203fmgen.cpp, $(SOURCES))
+SOURCES		:= $(subst $(SRCDIR)/snddrv/quasi88/2608fmgen.c, $(SRCDIR)/snddrv/quasi88/2608fmgen.cpp, $(SOURCES))
 
 TMP_FILE = Makefile.tmp
 DEP_FILE = Makefile.depend
 
 depend:
-		-@gcc -MM $(CFLAGS) $(SOUND_CFLAGS) $(SOURCES) > $(TMP_FILE)
+		-@$(CC) -MM $(CFLAGS) $(SOUND_CFLAGS) $(SOURCES) > $(TMP_FILE)
 		-@echo '# This file is generated by gcc' >  $(DEP_FILE)
 		-@echo '#   Do not edit !'               >> $(DEP_FILE)
 		-@echo                                   >> $(DEP_FILE)
-		-@perl -ane 'if (/:/) { @L = split(); $$Z = substr( $$L[1], 0, rindex( $$L[1], "/" ) ); $$Z =~ s/^src/$(OBJDIR)/; $$L[0] = $$Z . "/" . $$L[0]; $$_ = join( " ", @L ); print "$$_\n"; } else { print "$$_"; }' $(TMP_FILE) >> $(DEP_FILE)
+		-@perl -ane '$$S="$(SRCDIR)"; $$O="$(OBJDIR)";  if (/:/) { @L = split(); $$Z = substr( $$L[1], 0, rindex( $$L[1], "/" ) ); $$Z =~ s/^$$S/$$O/; $$L[0] = $$Z . "/" . $$L[0]; $$_ = join( " ", @L ); print "$$_\n"; } else { print "$$_"; }' $(TMP_FILE) >> $(DEP_FILE)
 		-@rm -f $(TMP_FILE)
 
 

@@ -6,14 +6,14 @@
 	void construct_##game(machine_config *machine)						\
 	{																	\
 		sound_config *sound = NULL;										\
+		screen_config *screen = &machine->screen[0];					\
 
 #define MACHINE_DRIVER_END 												\
 	}																	\
 
 
-/* core parameters */
-#define MDRV_FRAMES_PER_SECOND(rate)									\
-	machine->frames_per_second = (rate);								\
+#define MDRV_SCREEN_REFRESH_RATE(rate)									\
+	screen->defstate.refresh = (rate);									\
 
 
 /* add/remove speakers */
@@ -264,7 +264,7 @@ static	T_XMAME_FUNC pc88_fmgen2_func =
 static MACHINE_DRIVER_START( quasi88 )
 
 	/* basic machine hardware */
-	MDRV_FRAMES_PER_SECOND((float)(vsync_freq_hz))
+	MDRV_SCREEN_REFRESH_RATE((float)(vsync_freq_hz))
 
 	/* sound hardware */
 	MDRV_SPEAKER_STANDARD_STEREO("left", "right")
@@ -298,7 +298,7 @@ MACHINE_DRIVER_END
 static MACHINE_DRIVER_START( quasi88sd2 )
 
 	/* basic machine hardware */
-	MDRV_FRAMES_PER_SECOND((float)(vsync_freq_hz))
+	MDRV_SCREEN_REFRESH_RATE((float)(vsync_freq_hz))
 
 	/* sound hardware */
 	MDRV_SPEAKER_STANDARD_STEREO("left", "right")
@@ -335,7 +335,7 @@ MACHINE_DRIVER_END
 static MACHINE_DRIVER_START( quasi88fmgen )
 
 	/* basic machine hardware */
-	MDRV_FRAMES_PER_SECOND((float)(vsync_freq_hz))
+	MDRV_SCREEN_REFRESH_RATE((float)(vsync_freq_hz))
 
 	/* sound hardware */
 	MDRV_SPEAKER_STANDARD_STEREO("left", "right")
@@ -368,7 +368,7 @@ MACHINE_DRIVER_END
 static MACHINE_DRIVER_START( quasi88fmgen2 )
 
 	/* basic machine hardware */
-	MDRV_FRAMES_PER_SECOND((float)(vsync_freq_hz))
+	MDRV_SCREEN_REFRESH_RATE((float)(vsync_freq_hz))
 
 	/* sound hardware */
 	MDRV_SPEAKER_STANDARD_STEREO("left", "right")

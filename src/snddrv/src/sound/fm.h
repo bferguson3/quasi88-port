@@ -173,6 +173,10 @@ int YM2608Write(void *chip, int a,unsigned char v);
 unsigned char YM2608Read(void *chip,int a);
 int YM2608TimerOver(void *chip, int c );
 void YM2608Postload(void *chip);
+#if 1		/* QUASI88 */
+extern unsigned char YM2608_ADPCM_ROM[0x2000];
+extern const char *YM2608_ADPCM_FILE;
+#endif
 #endif /* BUILD_YM2608 */
 
 #if (BUILD_YM2610||BUILD_YM2610B)

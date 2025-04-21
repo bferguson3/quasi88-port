@@ -190,14 +190,33 @@ typedef void			(*write8_handler) (ATTR_UNUSED offs_t offset, ATTR_UNUSED UINT8 d
 
 
 
+/* src/video.h ============================================================== */
+
+/* maximum number of screens for one game */
+#define MAX_SCREENS					1
+
+typedef struct _screen_state screen_state;
+struct _screen_state
+{
+	float			refresh;					/* refresh rate */
+};
+
+typedef struct _screen_config screen_config;
+struct _screen_config
+{
+	screen_state	defstate;					/* default state */
+};
+
 /* src/mame.h ============================================================== */
 
 struct _running_machine
 {
-	const machine_config *	drv;				/* points to the constructed machine_config */
-
-	float					refresh_rate;		/* current video refresh rate */
+	machine_config *		drv;				/* points to the constructed machine_config */
+	screen_state			screen[MAX_SCREENS];/* current screen state */
 	int						sample_rate;		/* the digital audio sample rate */
+
+	/* for xmame 0.106 (instead of screen[0].refresh) */
+	float					refresh_rate;		/* current video refresh rate */
 };
 
 typedef struct _global_options global_options;
@@ -284,7 +303,7 @@ char *_auto_strdup(const char *str, const char *file, int line) ATTR_MALLOC;
 /* In mamecore.h: typedef struct _machine_config machine_config; */
 struct _machine_config
 {
-	float				frames_per_second;			/* number of frames per second */
+	screen_config		screen[MAX_SCREENS];		/* total number of screens */
 
 	sound_config		sound[MAX_SOUND];			/* array of sound chips in the system */
 	speaker_config		speaker[MAX_SPEAKER];		/* array of speakers in the system */

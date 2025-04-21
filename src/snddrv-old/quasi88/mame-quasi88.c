@@ -72,7 +72,7 @@ static struct InternalMachineDriver internal_drv;
 /* various game options filled in by the OSD */
 struct GameOptions options =
 {
-	22050,						/* サンプリングレート   8000 〜 48000 */
+	22050,						/* サンプリングレート   8000 .. 48000 */
 	0,							/* サンプル音使用可否   1:可 0:否     */
 	0,							/* FIRフィルター???     1:可 0:否     */
 };
@@ -373,7 +373,7 @@ int		xmame_has_sound(void)
 
 /****************************************************************
  * ボリューム取得
- *		現在の音量を取得する。範囲は、-32[db]〜0[db]
+ *		現在の音量を取得する。範囲は、-32[db]..0[db]
  ****************************************************************/
 int		xmame_cfg_get_mastervolume(void)
 {
@@ -386,7 +386,7 @@ int		xmame_cfg_get_mastervolume(void)
 
 /****************************************************************
  * ボリューム変更
- *		引数に、音量を与える。範囲は、-32[db]〜0[db]
+ *		引数に、音量を与える。範囲は、-32[db]..0[db]
  ****************************************************************/
 void	xmame_cfg_set_mastervolume(int vol)
 {
@@ -402,27 +402,27 @@ void	xmame_cfg_set_mastervolume(int vol)
 /****************************************************************
  * 音源別レベル変更
  *		引数の、音源の種類とレベルを与える
- *		レベルは、    0〜100 まで
+ *		レベルは、    0..100 まで
  *		音源の種類は、XMAME_MIXER_XXX だが、
  *					  これを mame 内部でのミキサーチャンネル番号に
  *					  変換しないといけない。
  *
  *	※ MAME 内部でのチャンネル
- *	    サウンドボードI		CH0〜2	PSG(ch1〜ch3)
+ *	    サウンドボードI		CH0..2	PSG(ch1..ch3)
  *							CH3		FM
  *							CH4		BEEP
- *							CH5〜9	SAMPLE
+ *							CH5..9	SAMPLE
  *
- *	    サウンドボードII	CH0〜2  PSG(ch1〜3)
+ *	    サウンドボードII	CH0..2  PSG(ch1..3)
  *							CH3		FM(L)
  *							CH4		FM(R)
  *							CH5		BEEP
- *							CH6〜10	SAMPLE
+ *							CH6..10	SAMPLE
  *
  *	    fmgen (I/IIとも)	CH0		PSG/FM(L)
  *							CH1		PSG/FM(R)
  *							CH2		BEEP
- *							CH3〜7	SAMPLE
+ *							CH3..7	SAMPLE
  ****************************************************************/
 void	xmame_cfg_set_mixer_volume(int ch, int level)
 {
@@ -532,7 +532,7 @@ void	xmame_cfg_set_mixer_volume(int ch, int level)
 }
 
 /****************************************************************
- * チャンネル別レベル取得 (レベルは、 0〜100)
+ * チャンネル別レベル取得 (レベルは、 0..100)
  *		引数に、チャンネルを与える
  *		チャンネルは、XMAME_MIXER_XXX
  *

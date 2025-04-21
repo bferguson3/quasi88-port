@@ -248,11 +248,7 @@ void streams_frame_update(void)
 		if (stream->new_sample_rate)
 		{
 			stream->sample_rate = stream->new_sample_rate;
-#if 0		/* QUASI88 */
 			stream->samples_per_frame_frac = (UINT32)((double)stream->sample_rate * (double)(1 << FRAC_BITS) / Machine->screen[0].refresh);
-#else		/* QUASI88 */
-			stream->samples_per_frame_frac = (UINT32)((double)stream->sample_rate * (double)(1 << FRAC_BITS) / Machine->drv->frames_per_second);
-#endif		/* QUASI88 */
 			stream->new_sample_rate = 0;
 		}
 	}
@@ -307,11 +303,7 @@ sound_stream *stream_create(int inputs, int outputs, int sample_rate, void *para
 	stream->tag         = stream_current_tag;
 	stream->index		= stream_index++;
 	stream->sample_rate = sample_rate;
-#if 0		/* QUASI88 */
 	stream->samples_per_frame_frac = (UINT32)((double)sample_rate * (double)(1 << FRAC_BITS) / Machine->screen[0].refresh);
-#else		/* QUASI88 */
-	stream->samples_per_frame_frac = (UINT32)((double)sample_rate * (double)(1 << FRAC_BITS) / Machine->drv->frames_per_second);
-#endif		/* QUASI88 */
 	stream->inputs      = inputs;
 	stream->outputs     = outputs;
 	stream->param       = param;

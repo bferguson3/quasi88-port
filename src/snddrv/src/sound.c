@@ -176,11 +176,7 @@ INLINE sound_info *find_sound_by_tag(const char *tag)
     sound_init - start up the sound system
 -------------------------------------------------*/
 
-#if	0		/* QUASI88 */
 int sound_init(running_machine *machine)
-#else		/* QUASI88 */
-int sound_init(void)
-#endif		/* QUASI88 */
 {
 	/* handle -nosound */
 	nosound_mode = (Machine->sample_rate == 0);
@@ -249,7 +245,7 @@ int sound_init(void)
 #if	0		/* QUASI88 */
 static void sound_exit(running_machine *machine)
 #else		/* QUASI88 */
-extern void sound_exit(void)
+       void sound_exit(running_machine *machine)
 #endif		/* QUASI88 */
 {
 	int sndnum;
@@ -546,7 +542,7 @@ static int route_sound(void)
 #if	0		/* QUASI88 */
 static void sound_reset(running_machine *machine)
 #else		/* QUASI88 */
-extern void sound_reset(void)
+       void sound_reset(running_machine *machine)
 #endif		/* QUASI88 */
 {
 	int sndnum;
@@ -565,7 +561,7 @@ extern void sound_reset(void)
 #if	0		/* QUASI88 */
 static void sound_pause(running_machine *machine, int pause)
 #else		/* QUASI88 */
-extern void sound_pause(int pause)
+       void sound_pause(running_machine *machine, int pause)
 #endif		/* QUASI88 */
 {
 	osd_sound_enable(!pause);

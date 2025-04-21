@@ -1,7 +1,7 @@
 /***********************************************************************
- * ¥¦¥¨¥¤¥ÈÄ´À°½èÍı (¥·¥¹¥Æ¥à°ÍÂ¸)
+ * ã‚¦ã‚¨ã‚¤ãƒˆèª¿æ•´å‡¦ç† (ã‚·ã‚¹ãƒ†ãƒ ä¾å­˜)
  *
- *	¾ÜºÙ¤Ï¡¢ wait.h »²¾È
+ *      è©³ç´°ã¯ã€ wait.h å‚ç…§
  ************************************************************************/
 
 #include <stdio.h>
@@ -14,148 +14,145 @@
 
 
 /*---------------------------------------------------------------------------*/
-static	int	wait_do_sleep;			/* idle»ş´Ö sleep ¤¹¤ë       */
+static int wait_do_sleep;				/* idleæ™‚é–“ sleep ã™ã‚‹               */
 
-static	int	wait_counter = 0;		/* Ï¢Â³²¿²ó»ş´Ö¥ª¡¼¥Ğ¡¼¤·¤¿¤«*/
-static	int	wait_count_max = 10;		/* ¤³¤ì°Ê¾åÏ¢Â³¥ª¡¼¥Ğ¡¼¤·¤¿¤é
-						   °ìÃ¶,»ş¹ïÄ´À°¤ò½é´ü²½¤¹¤ë */
+static int wait_counter = 0;			/* é€£ç¶šä½•å›æ™‚é–“ã‚ªãƒ¼ãƒãƒ¼ã—ãŸã‹ */
+static int wait_count_max = 10;			/* ã“ã‚Œä»¥ä¸Šé€£ç¶šã‚ªãƒ¼ãƒãƒ¼ã—ãŸã‚‰
+										   ä¸€æ—¦,æ™‚åˆ»èª¿æ•´ã‚’åˆæœŸåŒ–ã™ã‚‹ */
 
-/* ¥¦¥§¥¤¥È¤Ë»ÈÍÑ¤¹¤ë»ş´Ö¤ÎÆâÉôÉ½¸½¤Ï¡¢ usÃ±°Ì¤È¤¹¤ë¡£ (ms¤À¤ÈÀºÅÙ¤¬Äã¤¤¤Î¤Ç) 
+/* ã‚¦ã‚§ã‚¤ãƒˆã«ä½¿ç”¨ã™ã‚‹æ™‚é–“ã®å†…éƒ¨è¡¨ç¾ã¯ã€ uså˜ä½ã¨ã™ã‚‹ã€‚ (msã ã¨ç²¾åº¦ãŒä½ã„ã®ã§) 
 
-   SDL ¤Î»ş¹ï¼èÆÀ´Ø¿ô SDL_GetTicks() ¤Ï ms Ã±°Ì¤Ç¡¢ unsigned long ·¿¤òÊÖ¤¹¡£
-   ¤³¤ì¤ò 1000ÇÜ¤·¤Æ (us¤ËÊÑ´¹¤·¤Æ) »ÈÍÑ¤¹¤ë¤È¡¢71Ê¬¤Ç·å¤¢¤Õ¤ì¤·¤Æ¤·¤Ş¤¦¤Î¤Ç¡¢
-   ÆâÉôÉ½¸½¤Ï long long ·¿¤Ë¤·¤è¤¦¡£
+   SDL ã®æ™‚åˆ»å–å¾—é–¢æ•° SDL_GetTicks() ã¯ ms å˜ä½ã§ã€ unsigned long å‹ã‚’è¿”ã™ã€‚
+   ã“ã‚Œã‚’ 1000å€ã—ã¦ (usã«å¤‰æ›ã—ã¦) ä½¿ç”¨ã™ã‚‹ã¨ã€71åˆ†ã§æ¡ã‚ãµã‚Œã—ã¦ã—ã¾ã†ã®ã§ã€
+   å†…éƒ¨è¡¨ç¾ã¯ long long å‹ã«ã—ã‚ˆã†ã€‚
 
-   ¤Ê¤ª¡¢ SDL_GetTicks ¤Ï 49ÆüÌÜ¤ËÌá¤Ã¤Æ(wrap)¤·¤Ş¤¦¤Î¤Ç¡¢ÆâÉôÉ½¸½¤â¤³¤Î½Ö´Ö¤Ï
-   ¤ª¤«¤·¤Ê¤â¤Î¤Ë¤Ê¤ë (¥¦¥§¥¤¥È»ş´Ö¤¬ÊÑ¤Ë¤Ê¤ë) ¤¬¡¢µ¤¤Ë¤·¤Ê¤¤¤³¤È¤Ë¤¹¤ë¡£ */
+   ãªãŠã€ SDL_GetTicks ã¯ 49æ—¥ç›®ã«æˆ»ã£ã¦(wrap)ã—ã¾ã†ã®ã§ã€å†…éƒ¨è¡¨ç¾ã‚‚ã“ã®ç¬é–“ã¯
+   ãŠã‹ã—ãªã‚‚ã®ã«ãªã‚‹ (ã‚¦ã‚§ã‚¤ãƒˆæ™‚é–“ãŒå¤‰ã«ãªã‚‹) ãŒã€æ°—ã«ã—ãªã„ã“ã¨ã«ã™ã‚‹ã€‚ */
 
-#ifdef SDL_HAS_64BIT_TYPE
-typedef	Sint64		T_WAIT_TICK;
-#else
-typedef	long		T_WAIT_TICK;
-#endif
+typedef Sint64 T_WAIT_TICK;
 
-static	T_WAIT_TICK	next_time;		/* ¼¡¥Õ¥ì¡¼¥à¤Î»ş¹ï */
-static	T_WAIT_TICK	delta_time;		/* 1 ¥Õ¥ì¡¼¥à¤Î»ş´Ö */
+static T_WAIT_TICK next_time;			/* æ¬¡ãƒ•ãƒ¬ãƒ¼ãƒ ã®æ™‚åˆ» */
+static T_WAIT_TICK delta_time;			/* 1 ãƒ•ãƒ¬ãƒ¼ãƒ ã®æ™‚é–“ */
 
 
 
-/* ---- ¸½ºß»ş¹ï¤ò¼èÆÀ¤¹¤ë (usecÃ±°Ì) ---- */
+/* ---- ç¾åœ¨æ™‚åˆ»ã‚’å–å¾—ã™ã‚‹ (usecå˜ä½) ---- */
 
-#define	GET_TICK()	((T_WAIT_TICK)SDL_GetTicks() * 1000)
+#define GET_TICK()              ((T_WAIT_TICK)SDL_GetTicks() * 1000)
 
 
 
 
 
 /****************************************************************************
- * ¥¦¥§¥¤¥ÈÄ´À°½èÍı¤Î½é´ü²½¡¿½ªÎ»
+ * ã‚¦ã‚§ã‚¤ãƒˆèª¿æ•´å‡¦ç†ã®åˆæœŸåŒ–ï¼çµ‚äº†
  *****************************************************************************/
-int	wait_vsync_init(void)
+int wait_vsync_init(void)
 {
-    if (! SDL_WasInit(SDL_INIT_TIMER)) {
-	if (SDL_InitSubSystem(SDL_INIT_TIMER) != 0) {
-	    if (verbose_wait) printf("Error Wait (SDL)\n");
-	    return FALSE;
-	}
-    }
-
-    return TRUE;
-}
-
-void	wait_vsync_exit(void)
-{
-}
-
-
-
-/****************************************************************************
- * ¥¦¥§¥¤¥ÈÄ´À°½èÍı¤ÎÀßÄê
- *****************************************************************************/
-void	wait_vsync_setup(long vsync_cycle_us, int do_sleep)
-{
-    wait_counter = 0;
-
-
-    delta_time = (T_WAIT_TICK) vsync_cycle_us;		/* 1¥Õ¥ì¡¼¥à»ş´Ö */
-    next_time  = GET_TICK() + delta_time;		/* ¼¡¥Õ¥ì¡¼¥à»ş¹ï */
-
-    wait_do_sleep = do_sleep;				/* Sleep Í­Ìµ */
-}
-
-
-
-/****************************************************************************
- * ¥¦¥§¥¤¥È½èÍı
- *****************************************************************************/
-int	wait_vsync_update(void)
-{
-    int slept   = FALSE;
-    int on_time = FALSE;
-    T_WAIT_TICK diff_ms;
-
-
-    diff_ms = (next_time - GET_TICK()) / 1000;
-
-    if (diff_ms > 0) {			/* ÃÙ¤ì¤Æ¤Ê¤¤(»ş´Ö¤¬Í¾¤Ã¤Æ¤¤¤ë)¤Ê¤é */
-					/* diff_ms ¥ß¥êÉÃ¡¢¥¦¥§¥¤¥È¤¹¤ë     */
-
-	if (wait_do_sleep) {		/* »ş´Ö¤¬Íè¤ë¤Ş¤Ç sleep ¤¹¤ë¾ì¹ç */
-
-#if 1	    /* ÊıË¡ (1) */
-	    SDL_Delay((Uint32) diff_ms);	/* diff_ms ¥ß¥êÉÃ¡¢¥Ç¥£¥ì¥¤ */
-	    slept = TRUE;
-
-#else	    /* ÊıË¡ (2) */
-	    if (diff_ms < 10) {			/* 10msÌ¤Ëş¤Ê¤é¥Ó¥¸¡¼¥¦¥§¥¤¥È*/
-		while (GET_TICK() <= next_time)
-		    ;
-	    } else {				/* 10ms°Ê¾å¤Ê¤é¥Ç¥£¥ì¥¤      */
-		SDL_Delay((Uint32) diff_ms);
-		slept = TRUE;
-	    }
-#endif
-
-	} else {			/* »ş´Ö¤¬Íè¤ë¤Ş¤ÇTick¤ò´Æ»ë¤¹¤ë¾ì¹ç */
-
-	    while (GET_TICK() <= next_time)
-		;				/* ¥Ó¥¸¡¼¥¦¥§¥¤¥È */
+	if (!SDL_WasInit(SDL_INIT_TIMER)) {
+		if (SDL_InitSubSystem(SDL_INIT_TIMER) != 0) {
+			if (verbose_wait)
+				printf("Error Wait (SDL)\n");
+			return FALSE;
+		}
 	}
 
-	on_time = TRUE;
-    }
+	return TRUE;
+}
 
-    if (slept == FALSE) {	/* °ìÅÙ¤â SDL_Delay ¤·¤Ê¤«¤Ã¤¿¾ì¹ç */
-	SDL_Delay(1);			/* for AUDIO thread ?? */
-    }
-
-
-    /* ¼¡¥Õ¥ì¡¼¥à»ş¹ï¤ò»»½Ğ */
-    next_time += delta_time;
+void wait_vsync_exit(void)
+{
+}
 
 
-    if (on_time) {			/* »ş´ÖÆâ¤Ë½èÍı¤Ç¤­¤¿ */
+
+/****************************************************************************
+ * ã‚¦ã‚§ã‚¤ãƒˆèª¿æ•´å‡¦ç†ã®è¨­å®š
+ *****************************************************************************/
+void wait_vsync_setup(long vsync_cycle_us, int do_sleep)
+{
 	wait_counter = 0;
-    } else {				/* »ş´ÖÆâ¤Ë½èÍı¤Ç¤­¤Æ¤¤¤Ê¤¤ */
-	wait_counter ++;
-	if (wait_counter >= wait_count_max) {	/* ÃÙ¤ì¤¬¤Ò¤É¤¤¾ì¹ç¤Ï */
-	    wait_vsync_setup((long) delta_time,	/* ¥¦¥§¥¤¥È¤ò½é´ü²½   */
-			     wait_do_sleep);
+
+
+	delta_time = (T_WAIT_TICK) vsync_cycle_us;	/* 1ãƒ•ãƒ¬ãƒ¼ãƒ æ™‚é–“ */
+	next_time = GET_TICK() + delta_time;		/* æ¬¡ãƒ•ãƒ¬ãƒ¼ãƒ æ™‚åˆ» */
+
+	wait_do_sleep = do_sleep;					/* Sleep æœ‰ç„¡ */
+}
+
+
+
+/****************************************************************************
+ * ã‚¦ã‚§ã‚¤ãƒˆå‡¦ç†
+ *****************************************************************************/
+int wait_vsync_update(void)
+{
+	int slept = FALSE;
+	int on_time = FALSE;
+	T_WAIT_TICK diff_ms;
+
+
+	diff_ms = (next_time - GET_TICK()) / 1000;
+
+	if (diff_ms > 0) {					/* é…ã‚Œã¦ãªã„(æ™‚é–“ãŒä½™ã£ã¦ã„ã‚‹)ãªã‚‰ */
+										/* diff_ms ãƒŸãƒªç§’ã€ã‚¦ã‚§ã‚¤ãƒˆã™ã‚‹     */
+
+		if (wait_do_sleep) {			/* æ™‚é–“ãŒæ¥ã‚‹ã¾ã§ sleep ã™ã‚‹å ´åˆ */
+
+#if 1		/* æ–¹æ³• (1) */
+			SDL_Delay((Uint32) diff_ms);		/* diff_ms ãƒŸãƒªç§’ã€ãƒ‡ã‚£ãƒ¬ã‚¤ */
+			slept = TRUE;
+
+#else		/* æ–¹æ³• (2) */
+			if (diff_ms < 10) {					/* 10msæœªæº€ãªã‚‰ãƒ“ã‚¸ãƒ¼ã‚¦ã‚§ã‚¤ãƒˆ*/
+				while (GET_TICK() <= next_time);
+			} else {							/* 10msä»¥ä¸Šãªã‚‰ãƒ‡ã‚£ãƒ¬ã‚¤          */
+				SDL_Delay((Uint32) diff_ms);
+				slept = TRUE;
+			}
+#endif
+
+		} else {						/* æ™‚é–“ãŒæ¥ã‚‹ã¾ã§Tickã‚’ç›£è¦–ã™ã‚‹å ´åˆ */
+
+			while (GET_TICK() <= next_time);	/* ãƒ“ã‚¸ãƒ¼ã‚¦ã‚§ã‚¤ãƒˆ */
+		}
+
+		on_time = TRUE;
 	}
-    }
+
+	if (slept == FALSE) {				/* ä¸€åº¦ã‚‚ SDL_Delay ã—ãªã‹ã£ãŸå ´åˆ */
+		SDL_Delay(1);							/* for AUDIO thread ?? */
+	}
+
+
+	/* æ¬¡ãƒ•ãƒ¬ãƒ¼ãƒ æ™‚åˆ»ã‚’ç®—å‡º */
+	next_time += delta_time;
+
+
+	if (on_time) {								/* æ™‚é–“å†…ã«å‡¦ç†ã§ããŸ */
+		wait_counter = 0;
+	} else {									/* æ™‚é–“å†…ã«å‡¦ç†ã§ãã¦ã„ãªã„ */
+		wait_counter++;
+		if (wait_counter >= wait_count_max) {	/* é…ã‚ŒãŒã²ã©ã„å ´åˆã¯ */
+			wait_vsync_setup((long) delta_time,	/* ã‚¦ã‚§ã‚¤ãƒˆã‚’åˆæœŸåŒ–   */
+							 wait_do_sleep);
+		}
+	}
 
 #if 0
-    {
-	static int x = 0, y = 0;
-	if (++x == 55) {
-	    y++;
-	    x = 0;
-	    printf("wait %d\n", y);
-	    fflush(stdout);
+	{
+		static int x = 0, y = 0;
+		if (++x == 55) {
+			y++;
+			x = 0;
+			printf("wait %d\n", y);
+			fflush(stdout);
+		}
 	}
-    }
 #endif
 
-    if (on_time) return WAIT_JUST;
-    else         return WAIT_OVER;
+	if (on_time)
+		return WAIT_JUST;
+	else
+		return WAIT_OVER;
 }

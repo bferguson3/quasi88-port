@@ -43,13 +43,13 @@ xmame-0.71.1/src/sound/2608intf.c			snddrv/src/sound/2608intf.c
 xmame-0.71.1/src/sound/2608intf.h			snddrv/src/sound/2608intf.h
 xmame-0.71.1/src/sound/ay8910.c				snddrv/src/sound/ay8910.c
 xmame-0.71.1/src/sound/ay8910.h				snddrv/src/sound/ay8910.h
-xmame-0.71.1/src/sound/filter.c				snddrv/src/sound/filter.c
+xmame-0.71.1/src/sound/filter.c				snddrv/src/sound/filter.c, snddrv/src/sound/flt_rc.c
 xmame-0.71.1/src/sound/filter.h				snddrv/src/sound/filter.h
 xmame-0.71.1/src/sound/fm.c				snddrv/src/sound/fm.c
 xmame-0.71.1/src/sound/fm.h				snddrv/src/sound/fm.h
-xmame-0.71.1/src/sound/mixer.c				snddrv/src/sound/mixer.c
+xmame-0.71.1/src/sound/mixer.c				snddrv/src/sound/mixer.c, snddrv/src/sound.c
 xmame-0.71.1/src/sound/mixer.h				snddrv/src/sound/mixer.h
-xmame-0.71.1/src/sound/streams.c			snddrv/src/sound/streams.c
+xmame-0.71.1/src/sound/streams.c			snddrv/src/sound/streams.c, snddrv/src/streams.c
 xmame-0.71.1/src/sound/streams.h			snddrv/src/sound/streams.h
 xmame-0.71.1/src/sound/ymdeltat.c			snddrv/src/sound/ymdeltat.c
 xmame-0.71.1/src/sound/ymdeltat.h			snddrv/src/sound/ymdeltat.h

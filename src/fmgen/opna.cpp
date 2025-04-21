@@ -1407,7 +1407,7 @@ bool OPNA::LoadRhythmSample(const char* path)
 		fsize = 4 + whdr_chunksize - sizeof(whdr);
 		do 
 		{
-			osd_fseek(file, fsize, SEEK_CUR);
+			osd_fseek(file, (int32) fsize, SEEK_CUR);
 			osd_fread(subchunkname, 4, 1, file);
 			osd_fread(fsize_lsb1st, 4, 1, file);
 			fsize =  (uint32)fsize_lsb1st[0]     +

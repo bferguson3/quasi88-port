@@ -485,11 +485,7 @@ static int totalsnd;
     (type,index) pairs for the current Machine
 -------------------------------------------------*/
 
-#if	0		/* QUASI88 */
 void sndintrf_init(running_machine *machine)
-#else		/* QUASI88 */
-void sndintrf_init(void)
-#endif		/* QUASI88 */
 {
 	int mapindex;
 

@@ -6,27 +6,32 @@
 
 
 /*
- *	src/SDL/ °Ê²¼¤Ç¤Î¥°¥í¡¼¥Ğ¥ëÊÑ¿ô
+ *  src/SDL2/ ä»¥ä¸‹ã§ã®ã‚°ãƒ­ãƒ¼ãƒãƒ«å¤‰æ•°
  */
-extern	int	sdl_mouse_rel_move;	/* ¥Ş¥¦¥¹ÁêÂĞ°ÜÆ°ÎÌ¸¡ÃÎ²ÄÇ½¤«	*/
+extern int sdl_mouse_rel_move;			/* ãƒã‚¦ã‚¹ç›¸å¯¾ç§»å‹•é‡æ¤œçŸ¥å¯èƒ½ã‹ */
+extern int sdl_repeat_on;				/* ã‚­ãƒ¼ãƒªãƒ”ãƒ¼ãƒˆONã‹ */
 
 
 
 /*
- *	src/SDL/ °Ê²¼¤Ç¤Î¥°¥í¡¼¥Ğ¥ëÊÑ¿ô (¥ª¥×¥·¥ç¥óÀßÄê²ÄÇ½¤ÊÊÑ¿ô)
+ *  src/SDL2/ ä»¥ä¸‹ã§ã®ã‚°ãƒ­ãƒ¼ãƒãƒ«å¤‰æ•° (ã‚ªãƒ—ã‚·ãƒ§ãƒ³è¨­å®šå¯èƒ½ãªå¤‰æ•°)
  */
-extern	int	use_hwsurface;		/* HW SURFACE ¤ò»È¤¦¤«¤É¤¦¤«	*/
-extern	int	use_doublebuf;		/* ¥À¥Ö¥ë¥Ğ¥Ã¥Õ¥¡¤ò»È¤¦¤«¤É¤¦¤«	*/
+extern int use_software_rendering;		/*SDL_RENDERER_SOFTWARE ã‚’ä½¿ã†       */
+extern int use_desktop_fullscreen;		/*SDL_WINDOW_FULLSCREEN_DESKTOPã‚’ä½¿ã†*/
 
-extern	int	use_cmdkey;		/* Command¥­¡¼¤Ç¥á¥Ë¥å¡¼¤ØÁ«°Ü     */
-extern	int	keyboard_type;		/* ¥­¡¼¥Ü¡¼¥É¤Î¼ïÎà                */
-extern	char	*file_keyboard;		/* ¥­¡¼ÀßÄê¥Õ¥¡¥¤¥ëÌ¾		   */
-extern	int	use_joydevice;		/* ¥¸¥ç¥¤¥¹¥Æ¥£¥Ã¥¯¥Ç¥Ğ¥¤¥¹¤ò³«¤¯? */
-extern	int	show_fps;		/* test */
+extern int use_ime;						/* ãƒ¡ãƒ‹ãƒ¥ãƒ¼ã§IMEã‚’ä½¿ãˆã‚‹ã‚ˆã†ã«ã™ã‚‹   */
+
+extern int use_menukey;					/* å·¦Win/å·¦Cmdã‚­ãƒ¼ã§ãƒ¡ãƒ‹ãƒ¥ãƒ¼ã¸é·ç§»   */
+extern int keyboard_type;				/* ã‚­ãƒ¼ãƒœãƒ¼ãƒ‰ã®ç¨®é¡                  */
+extern char *file_keyboard;				/* ã‚­ãƒ¼è¨­å®šãƒ•ã‚¡ã‚¤ãƒ«å                */
+extern int use_joydevice;				/* ã‚¸ãƒ§ã‚¤ã‚¹ãƒ†ã‚£ãƒƒã‚¯ãƒ‡ãƒã‚¤ã‚¹ã‚’é–‹ã?   */
 
 
 
-int	sdl_init(void);
-void	sdl_exit(void);
+/*
+ *      src/SDL2/ ä»¥ä¸‹ã§ã®ã‚°ãƒ­ãƒ¼ãƒãƒ«é–¢æ•°
+ */
+int sdl2_init(void);
+void sdl2_exit(void);
 
 #endif	/* DEVICE_H_INCLUDED */

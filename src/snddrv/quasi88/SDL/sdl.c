@@ -175,6 +175,15 @@ extern void *sdl_dsp_create(const void *flags)
    		fprintf(stderr, "failed opening audio device\n");
    		return NULL;
    }
+#if 1		/* QUASI88 */
+#if (SDL_MAJOR_VERSION >= 2)
+   if (audiospec->size == 0) {			/* for windows in SDL2 ? */
+	   audiospec->size = audiospec->samples
+		   * ((audiospec->format == AUDIO_S8) ? 1 : 2)
+		   * (audiospec->channels);
+   }
+#endif
+#endif		/* QUASI88 */
 
    sample.dataSize = audiospec->size * 4;
    if (!(sample.data = calloc(sample.dataSize, sizeof(Uint8))))
@@ -261,6 +270,11 @@ static void sdl_fill_sound(void *unused, Uint8 *stream, int len)
 {
 	int result;
 	Uint8 *dst;
+#if 1		/* QUASI88 */
+#if (SDL_MAJOR_VERSION >= 2)
+	SDL_memset(stream, 0, len);
+#endif
+#endif		/* QUASI88 */
 	sample.amountRead = len;
 	if(sample.sound_n_pos <= 0)
 		return;

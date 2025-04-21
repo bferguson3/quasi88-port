@@ -75,7 +75,7 @@
 //		タイマーが停止している場合は ULONG_MAX を返す… と思う
 //	
 //	void SetVolumeFM(int db)/SetVolumePSG(int db) ...
-//		各音源の音量を＋−方向に調節する．標準値は 0.
+//		各音源の音量を＋－方向に調節する．標準値は 0.
 //		単位は約 1/2 dB，有効範囲の上限は 20 (10dB)
 //
 namespace FM

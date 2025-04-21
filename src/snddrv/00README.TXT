@@ -33,41 +33,41 @@ MAME のライセンスについては、このディレクトリにある
   MAME 0.112 のソースを QUASI88 向けに改変したものです。
 
 
-src/cpuintrf.h			ダミー
-src/driver.c			未使用部分をコメントアウト。
-src/driver.h			ダミー
-src/mame.h			ダミー
-src/mamecore.h			ダミー
-src/osdepend.h			ダミー
-src/profiler.h			ダミー
-src/restrack.c			未使用部分をコメントアウト。
-src/restrack.h			ダミー
-src/sndintrf.c			BEEP, fmgen対応部を追加。
-src/sndintrf.h			BEEP, fmgen対応部を追加。
-src/sound.c			プロトタイプ変更など
-src/sound.h			プロトタイプ変更
-src/streams.c			MAME 0.106 相当に変更
-src/streams.h			
-src/timer.h			ダミー
+src/cpuintrf.h		ダミー
+src/driver.c		未使用部を削除
+src/driver.h		ダミー
+src/mame.h		ダミー
+src/mamecore.h		ダミー
+src/osdepend.h		ダミー
+src/profiler.h		ダミー
+src/restrack.c		
+src/restrack.h		ダミー
+src/sndintrf.c		BEEP、fmgen対応部を追加
+src/sndintrf.h		BEEP、fmgen対応部を追加
+src/sound.c		スコープ変更、WAV処理追加、sound_scalebufferpos変更
+src/sound.h		プロトタイプ変更
+src/streams.c		MrC 向けに修正
+src/streams.h		
+src/timer.h		ダミー
 
-src/sound/2203intf.c		タイマー、音量処理追加
-src/sound/2203intf.h		タイマー、音量処理追加
-src/sound/2608intf.c		タイマー、音量処理追加
-src/sound/2608intf.h		タイマー、音量処理追加
-src/sound/ay8910.c		音量処理追加
-src/sound/ay8910.h		音量処理追加
-src/sound/flt_rc.c		
-src/sound/flt_rc.h		
-src/sound/flt_vol.c		
-src/sound/flt_vol.h		
-src/sound/fm.c			修正
-src/sound/fm.h			define修正
-src/sound/samples.c		ファイル処理変更
-src/sound/samples.h		
-src/sound/wavwrite.c		修正
-src/sound/wavwrite.h		
-src/sound/ymdeltat.c		音量処理追加
-src/sound/ymdeltat.h		
+src/sound/2203intf.c	タイマー、音量処理追加
+src/sound/2203intf.h	タイマー、音量処理追加
+src/sound/2608intf.c	タイマー、音量処理追加
+src/sound/2608intf.h	タイマー、音量処理追加
+src/sound/ay8910.c	音量処理追加
+src/sound/ay8910.h	音量処理追加
+src/sound/flt_rc.c	
+src/sound/flt_rc.h	
+src/sound/flt_vol.c	
+src/sound/flt_vol.h	
+src/sound/fm.c		修正、リズムデータ削除
+src/sound/fm.h		define修正
+src/sound/samples.c	ファイル処理変更
+src/sound/samples.h	
+src/sound/wavwrite.c	修正
+src/sound/wavwrite.h	
+src/sound/ymdeltat.c	音量処理追加
+src/sound/ymdeltat.h	
 
 
 ●src/unix ディレクトリ以下のソースは、

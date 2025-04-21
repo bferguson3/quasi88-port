@@ -92,7 +92,7 @@ static void *fmgen2608_start(int sndindex, int clock, const void *config)
 
 	if (info->opna->Init(clock,
 						 Machine->sample_rate ? Machine->sample_rate :44100,
-						 NULL)) {
+						 0)) {
 		if (sound2_adpcm) {
 			uint8* adpcmbuf = info->opna->GetADPCMBuffer();
 			if (adpcmbuf) {

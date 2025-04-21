@@ -150,11 +150,36 @@ static void *ym2608_start(int sndindex, int clock, const void *config)
 	pcmbufa  = (void *)(memory_region(info->intf->pcmrom));
 	pcmsizea = memory_region_length(info->intf->pcmrom);
 #else		/* QUASI88 */
-	if( sound2_adpcm==NULL ){
-	  sound2_adpcm = (byte *)malloc( 256 * 1024 * sizeof(char) );
+	if (sound2_adpcm == NULL) {
+		sound2_adpcm = (byte *) malloc(256 * 1024 * sizeof(char));
 	}
 	pcmbufa  = sound2_adpcm;
 	pcmsizea = 256 * 1024;
+
+	{
+		char filename[64];
+		mame_file *f = NULL;
+		int success = FALSE;
+
+		memset(YM2608_ADPCM_ROM, 0, sizeof(YM2608_ADPCM_ROM));
+		strcpy(filename, YM2608_ADPCM_FILE);
+
+		if (mame_fopen(NULL, filename, 0, &f) == FILERR_NONE) {
+			if (mame_fread(f, YM2608_ADPCM_ROM, sizeof(YM2608_ADPCM_ROM)) == sizeof(YM2608_ADPCM_ROM)) {
+				success = TRUE;
+			}
+			mame_fclose(f);
+		}
+		if (verbose_proc) {
+			if (f == NULL) {
+				printf( "  %-12s ... Not Found\n", YM2608_ADPCM_FILE);
+			} else {
+				printf( "  Found %-12s : Load...", YM2608_ADPCM_FILE);
+				if (success) printf("OK\n");
+				else         printf("FAILED\n");
+			}
+		}
+	}
 #endif		/* QUASI88 */
 
 	/* initialize YM2608 */

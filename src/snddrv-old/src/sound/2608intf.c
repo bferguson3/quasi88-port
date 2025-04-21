@@ -119,6 +119,29 @@ int YM2608_sh_start(const struct MachineSound *msound)
 		}
 		pcmbufa[i]  = sound2_adpcm;
 		pcmsizea[i] = 256 * 1024;
+
+		{
+			mame_file *f = NULL;
+			int success = FALSE;
+
+			memset(YM2608_ADPCM_ROM, 0, sizeof(YM2608_ADPCM_ROM));
+
+			if ((f = mame_fopen(NULL, YM2608_ADPCM_FILE, FILETYPE_SAMPLE, FALSE)) != NULL) {
+				if (mame_fread(f, YM2608_ADPCM_ROM, sizeof(YM2608_ADPCM_ROM)) == sizeof(YM2608_ADPCM_ROM)) {
+					success = TRUE;
+				}
+				mame_fclose(f);
+			}
+			if (verbose_proc) {
+				if (f == NULL) {
+					printf( "  %-12s ... Not Found\n", YM2608_ADPCM_FILE);
+				} else {
+					printf( "  Found %-12s : Load...", YM2608_ADPCM_FILE);
+					if (success) printf("OK\n");
+					else         printf("FAILED\n");
+				}
+			}
+		}
 #endif	/* QUASI88 */
 	}
 

@@ -258,7 +258,6 @@ char *_auto_strdup(const char *str, const char *file, int line)
 }
 
 
-#if 0		/* QUASI88 */
 /*-------------------------------------------------
     auto_strdup_allow_null - allocate auto-freeing
     string if str is null
@@ -325,4 +324,3 @@ void validate_auto_malloc_memory(void *memory, size_t memory_size)
 	fatalerror("Memory block [0x%p-0x%p] not found", this_memory, this_memory + this_memory_size - 1);
 }
 
-#endif		/* QUASI88 */

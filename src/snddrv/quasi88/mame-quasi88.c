@@ -65,16 +65,12 @@ static T_XMAME_FUNC *xmame_func = &xmame_func_nosound;
 /*-------------------------------------------------------------------------*/
 
 /* the active machine */
-static running_machine active_machine;
 running_machine *Machine;
-
-/* the active game driver */
-static machine_config internal_drv;
 
 /* various game options filled in by the OSD */
 global_options options =
 {
-	44100,						/* サンプリングレート   8000 〜 48000 */
+	44100,						/* サンプリングレート   8000 .. 48000 */
 	0,							/* サンプル音使用可否   1:可 0:否     */
 };
 
@@ -82,74 +78,112 @@ global_options options =
 /*	run_game()			[src/mame.c] */
 /*	create_machine()	[src/mame.c] */
 /*	init_machine()		[src/mame.c] */
-static void	f_create_machine(void)
+static running_machine *f_create_machine(void)
 {
 
 	/* create_machine() [src/mame.c] -------------------------------- */
 
-	/* first give the machine a good cleaning */
-	Machine = &active_machine;
-	memset(Machine, 0, sizeof(*Machine));
+	running_machine *machine;
+	int scrnum;
 
-	/* initialize the driver-related variables in the Machine */
-	Machine->drv = &internal_drv;
+	/* allocate memory for the machine */
+	machine = malloc(sizeof(*machine));
+	if (machine == NULL)
+		goto error;
+	memset(machine, 0, sizeof(*machine));
+
+	/* initialize the driver-related variables in the machine */
+	machine->drv = malloc(sizeof(*machine->drv));
+	if (machine->drv == NULL)
+		goto error;
 
 	/* expand_machine_driver() [src/driver.c] */
 	{
-		memset(&internal_drv, 0, sizeof(internal_drv));
+		memset(machine->drv, 0, sizeof(*machine->drv));
 
 #ifdef	USE_FMGEN
 		if (use_fmgen) {
 			if (sound_board == SOUND_I) {
-				construct_quasi88fmgen(&internal_drv);
+				construct_quasi88fmgen(machine->drv);
 			} else {
-				construct_quasi88fmgen2(&internal_drv);
+				construct_quasi88fmgen2(machine->drv);
 			}
 		}
 		else
 #endif
 		{
 			if (sound_board == SOUND_I) {
-				construct_quasi88(&internal_drv);
+				construct_quasi88(machine->drv);
 			} else {
-				construct_quasi88sd2(&internal_drv);
+				construct_quasi88sd2(machine->drv);
 			}
 		}
 	}
 
-	/* 固定値でいいの？ 可変にする場合はどう制御する？ */
-	Machine->refresh_rate = Machine->drv->frames_per_second;
+	/* configure all screens to be the default */
+	for (scrnum = 0; scrnum < MAX_SCREENS; scrnum++)
+		machine->screen[scrnum] = machine->drv->screen[scrnum].defstate;
 
-	/* initialize the samplerate */
-	Machine->sample_rate = options.samplerate;
+	/* 固定値でいいの？ 可変にする場合はどう制御する？ */
+	machine->refresh_rate = machine->drv->screen[0].defstate.refresh;
+
+	/* convert some options into live state */
+	machine->sample_rate = options.samplerate;
+
+
+	/* run_game() [src/mame.c] -------------------------------- */
+
+	/* ここで、 auto_malloc 関連の初期化をする */
+	init_resource_tracking();
+
+	/* start tracking resources for real */
+	begin_resource_tracking();
+
 
 	/* init_machine() [src/mame.c] -------------------------------- */
 
 	/* initialize basic can't-fail systems here */
-	sndintrf_init();
+	sndintrf_init(NULL);
 
 	/* init the osd layer */
-/*	if (osd_init() != 0)								*/
-/*		fprintf(stderr, "FATAL: osd_init failed\n");	*/
+/*	if (osd_init(NULL) != 0)							*/
 /*		fatalerror("osd_init failed");					*/
-/*	}													*/
 
 
+	/* create_machine() [src/mame.c] -------------------------------- */
 
-	/* ここで、 auto_malloc 関連の初期化をする */
-	init_resource_tracking();
-	begin_resource_tracking();
+	return machine;
+
+error:
+	if (machine->drv != NULL)
+		free((machine_config *)machine->drv);
+	if (machine != NULL)
+		free(machine);
+	return NULL;
 }
 
 
 /*	destroy_machine()	[src/mame.c] */
-static void	f_destroy_machine(void)
+static void f_destroy_machine(running_machine *machine)
 {
-	Machine = NULL;
+	/* run_game() [src/mame.c] -------------------------------- */
 
 	/* ここで、 auto_malloc されたメモリをすべて free する */
+
+	/* stop tracking resources at this level */
 	end_resource_tracking();
+
+	/* close all inner resource tracking */
 	exit_resource_tracking();
+
+
+	/* destroy_machine() [src/mame.c] -------------------------------- */
+
+	assert(machine == Machine);
+	if (machine->drv != NULL)
+		free((machine_config *)machine->drv);
+	free(machine);
+	Machine = NULL;
 }
 
 
@@ -185,11 +219,11 @@ int		xmame_sound_start(void)
 
 	if (verbose_proc) printf("\n");
 
-	f_create_machine();
+	Machine = f_create_machine();
 
 
 	/* ↓ 内部で osd_start_audio_stream() が呼び出される */
-	if (sound_init() == 0) {
+	if (sound_init(NULL) == 0) {
 
 		xmame_func = &xmame_func_sound;
 
@@ -227,7 +261,7 @@ int		xmame_sound_start(void)
 
 		if (verbose_proc) printf("Done\n");
 
-		sound_reset();
+		sound_reset(NULL);
 
 		return 1;
 
@@ -261,9 +295,9 @@ void	xmame_sound_stop(void)
 {
 	if (use_sound) {
 		/* ↓ 内部で osd_stop_audio_stream() が呼び出される */
-		sound_exit();
+		sound_exit(NULL);
 
-		f_destroy_machine();
+		f_destroy_machine(Machine);
 	}
 }
 
@@ -271,7 +305,7 @@ void	xmame_sound_suspend(void)
 {
 	if (use_sound) {
 		if (close_device) {
-			sound_pause(1);
+			sound_pause(NULL, 1);
 		}
 
 		/* サウンド停止時は、無音を出力し続ける必要がある。
@@ -286,7 +320,7 @@ void	xmame_sound_resume(void)
 {
 	if (use_sound) {
 		if (close_device) {
-			sound_pause(0);
+			sound_pause(NULL, 0);
 		}
 
 		quasi88_is_paused = FALSE;	/* mame_is_paused() が偽を返すように */
@@ -295,7 +329,7 @@ void	xmame_sound_resume(void)
 void	xmame_sound_reset(void)
 {
 	if (use_sound) {
-		sound_reset();
+		sound_reset(NULL);
 	}
 }
 
@@ -411,7 +445,7 @@ int		xmame_has_sound(void)
 
 /****************************************************************
  * ボリューム取得
- *		現在の音量を取得する。範囲は、-32[db]〜0[db]
+ *		現在の音量を取得する。範囲は、-32[db]..0[db]
  ****************************************************************/
 int		xmame_cfg_get_mastervolume(void)
 {
@@ -424,7 +458,7 @@ int		xmame_cfg_get_mastervolume(void)
 
 /****************************************************************
  * ボリューム変更
- *		引数に、音量を与える。範囲は、-32[db]〜0[db]
+ *		引数に、音量を与える。範囲は、-32[db]..0[db]
  ****************************************************************/
 void	xmame_cfg_set_mastervolume(int vol)
 {
@@ -440,7 +474,7 @@ void	xmame_cfg_set_mastervolume(int vol)
 /****************************************************************
  * チャンネル別レベル変更
  *		引数の、音源の種類とレベルを与える
- *		レベルは、    0〜100 まで
+ *		レベルは、    0..100 まで
  *		音源の種類は、XMAME_MIXER_XXX で指定
  ****************************************************************/
 void	xmame_cfg_set_mixer_volume(int ch, int level)
@@ -529,7 +563,7 @@ void	xmame_cfg_set_mixer_volume(int ch, int level)
 }
 
 /****************************************************************
- * チャンネル別レベル取得 (レベルは、 0〜100)
+ * チャンネル別レベル取得 (レベルは、 0..100)
  *		引数に、チャンネルを与える
  *		チャンネルは、XMAME_MIXER_XXX
  *

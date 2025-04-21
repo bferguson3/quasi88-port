@@ -182,6 +182,10 @@ void YM2608UpdateOne(int num, INT16 **buffer, int length);
 int YM2608Write(int n, int a,unsigned char v);
 unsigned char YM2608Read(int n,int a);
 int YM2608TimerOver(int n, int c );
+#if 1		/* QUASI88 */
+extern unsigned char YM2608_ADPCM_ROM[0x2000];
+extern const char *YM2608_ADPCM_FILE;
+#endif
 #endif /* BUILD_YM2608 */
 
 #if (BUILD_YM2610||BUILD_YM2610B)

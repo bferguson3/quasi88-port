@@ -68,13 +68,11 @@ struct _speaker_config
 ***************************************************************************/
 
 /* core interfaces */
-#if 0		/* QUASI88 */
 int sound_init(running_machine *machine);
-#else		/* QUASI88 */
-int sound_init(void);
-void sound_reset(void);
-void sound_pause(int pause);
-void sound_exit(void);
+#if 1		/* QUASI88 */
+void sound_reset(running_machine *machine);
+void sound_pause(running_machine *machine, int pause);
+void sound_exit(running_machine *machine);
 int sound_wavfile_open(const char *filename);
 int sound_wavfile_opened(void);
 void sound_wavfile_close(void);

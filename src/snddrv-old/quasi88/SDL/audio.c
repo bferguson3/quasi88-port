@@ -19,7 +19,7 @@
 
 /*---------------------------------------------------------------*/
 static int use_audiodevice = 1;		/* use audio-devide for audio output */
-/* static int attenuation = 0;		 * ボリューム -32〜0 [db] 現在未サポート */
+/* static int attenuation = 0;		 * ボリューム -32..0 [db] 現在未サポート */
 
 static int sound_enabled;			/* オーディオデバイスを開いたら、真 */
 
@@ -61,7 +61,7 @@ void	xmame_config_exit(void)
 
 static	const	T_CONFIG_TABLE xmame_options[] =
 {
-  /* 350〜399: サウンド依存オプション */
+  /* 350..399: サウンド依存オプション */
 
   { 351, "sound",        X_FIX,  &use_sound,       TRUE,                  0,0, OPT_SAVE },
   { 351, "snd",          X_FIX,  &use_sound,       TRUE,                  0,0, 0        },
@@ -484,11 +484,11 @@ void	osd_update_video_and_audio(void)
  * 音量制御
  *
  * void osd_set_mastervolume(int attenuation)
- *      サウンドデバイスの音量を設定する。 attenuation は 音量で、 -32〜0 
+ *      サウンドデバイスの音量を設定する。 attenuation は 音量で、 -32..0 
  *      (単位は db)。 音量変更のできないデバイスであれば、ダミーでよい。
  *
  * int osd_get_mastervolume(void)
- *      現在のサウンドデバイスの音量を取得する。 戻値は -32〜0 (単位は db)。
+ *      現在のサウンドデバイスの音量を取得する。 戻値は -32..0 (単位は db)。
  *      音量変更のできないデバイスであれば、ダミーでよい。
  *
  *****************************************************************************/

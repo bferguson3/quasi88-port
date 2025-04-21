@@ -1,11 +1,12 @@
 /***********************************************************************
- * �����ե��å����� (�����ƥ���¸)
+ * グラフィック処理 (システム依存)
  *
- *	�ܺ٤ϡ� graph.h ����
+ *      詳細は、 graph.h 参照
  ************************************************************************/
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <SDL.h>
 
 #include "quasi88.h"
@@ -14,646 +15,618 @@
 
 /************************************************************************/
 
-/*#define	DEBUG_PRINTF*/
+#define	DEBUG_PRINTF	(0)
+#define DBGPRINTF(x) if (DEBUG_PRINTF) printf x
 
 
-/* �ʲ��� static ���ѿ������ץ��������ѹ��Ǥ����Τǥ������Х��ˤ��Ƥ��� */
+/* 以下は static な変数。オプションで変更できるのでグローバルにしてある */
 
-    int	use_hwsurface	= TRUE;		/* HW SURFACE ���Ȥ����ɤ���	*/
-    int	use_doublebuf	= FALSE;	/* ���֥��Хåե����Ȥ����ɤ���	*/
+int use_software_rendering = FALSE;		/*SDL_RENDERER_SOFTWARE を使う*/
+int use_desktop_fullscreen = TRUE;		/*SDL_WINDOW_FULLSCREEN_DESKTOPを使う*/
 
 
-/* �ʲ��ϡ� event.c �ʤɤǻ��Ѥ��롢 OSD �ʥ������Х��ѿ� */
+/* 以下は、 event.c などで使用する、 OSD なグローバル変数 */
 
-    int	sdl_mouse_rel_move;		/* �ޥ������а�ư�̸��β�ǽ��	*/
+int sdl_mouse_rel_move;					/* マウス相対移動量検知可能か */
+int sdl_repeat_on;						/* キーリピートONか */
+
 
 
 
 /************************************************************************/
 
-static	T_GRAPH_SPEC	graph_spec;		/* ���ܾ���		*/
+static T_GRAPH_SPEC graph_spec;			/* 基本情報            */
 
-static	int		graph_exist;		/* ���ǡ����������Ѥ�	*/
-static	T_GRAPH_INFO	graph_info;		/* ���λ��Ρ����̾���	*/
+static int graph_exist;					/* 真で、画面生成済み  */
+static T_GRAPH_INFO graph_info;			/* その時の、画面情報  */
+
+static int now_fullscreen;
+static int now_width;
+static int now_height;
 
 
 /************************************************************************
- *	SDL�ν�����
- *	SDL�ν�λ
+ *      SDL2の初期化
+ *      SDL2の終了
  ************************************************************************/
 
-int	sdl_init(void)
+int sdl2_init(void)
 {
-    SDL_version libver;
-    SDL_GetVersion(&libver);
+	SDL_version libver;
+	SDL_GetVersion(&libver);
 
-    if (verbose_proc) {
-	printf("Initializing SDL (%d.%d.%d) ... ",
-	       libver.major, libver.minor, libver.patch); fflush(NULL);
-    }
-
-    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0) {
-
-	if (verbose_proc) printf("Failed\n");
-	fprintf(stderr, "SDL Error: %s\n", SDL_GetError());
-
-	return FALSE;
-
-    } else {
-
-	if (verbose_proc) printf("OK\n");
-	return TRUE;
-    }
-}
-
-/************************************************************************/
-
-void	sdl_exit(void)
-{
-    SDL_Quit();
-}
-
-
-/************************************************************************
- *	�����ե��å������ν�����
- *	�����ե��å�������ư��
- *	�����ե��å������ν�λ
- ************************************************************************/
-
-static	char	sdl_vname[16];
-static	int	sdl_depth;
-static	int	sdl_byte_per_pixel;
-
-static	SDL_Rect **sdl_mode;
-static	Uint32	   sdl_mode_flags;
-
-
-const T_GRAPH_SPEC	*graph_init(void)
-{
-    /*int	win_w, win_h;
-    int	ful_w, ful_h;
-    int i;
-    const SDL_VideoInfo *vi;
-
-    sdl_vname[0] = '\0';
-    SDL_VideoDriverName(sdl_vname, sizeof(sdl_vname));
-    vi = SDL_GetVideoInfo();
-
-    if (verbose_proc) {
-	printf("Initializing Graphic System (SDL:%s) ... \n", sdl_vname);
-    }
-
-    // �����٤ȡ��ԥ����뤢�����ΥХ��ȿ��������å�
-
-    sdl_depth          = vi->vfmt->BitsPerPixel;
-    sdl_byte_per_pixel = vi->vfmt->BytesPerPixel;
-
-#if	defined(SUPPORT_16BPP) && defined(SUPPORT_32BPP)
-    if        (sdl_byte_per_pixel == 2 ||
-	       sdl_byte_per_pixel == 4) {
-         ; // OK
-    } else {
-	sdl_depth          = 16;
-	sdl_byte_per_pixel = 2;
-    }
-#elif	defined(SUPPORT_16BPP)
-	sdl_depth          = 16;
-	sdl_byte_per_pixel = 2;
-#elif	defined(SUPPORT_32BPP)
-	sdl_depth          = 32;
-	sdl_byte_per_pixel = 4;
-#endif
-
-
-
-#ifdef	DEBUG_PRINTF
-    printf("  <VideoInfo> %s\n", sdl_vname);
-    printf("  hw_available  %d  ", vi->hw_available);
-    printf("  wm_available  %d\n", vi->wm_available);
-    printf("  blit_hw       %d  ", vi->blit_hw     );
-    printf("  blit_hw_CC    %d  ", vi->blit_hw_CC  );
-    printf("  blit_hw_A     %d\n", vi->blit_hw_A   );
-    printf("  blit_sw       %d  ", vi->blit_sw     );
-    printf("  blit_sw_CC    %d  ", vi->blit_sw_CC  );
-    printf("  blit_sw_A     %d\n", vi->blit_sw_A   );
-    printf("  blit_fill     %d  ", vi->blit_fill   );
-    printf("  video_mem     %d\n", vi->video_mem   );
-    printf("  palette       %p\n", vi->vfmt->palette       );
-    printf("  BitsPerPixel  %2d  ", vi->vfmt->BitsPerPixel  );
-    printf("  BytesPerPixel %2d\n", vi->vfmt->BytesPerPixel );
-    printf("  Rmask   %8x  ", vi->vfmt->Rmask         );
-    printf("  Gmask   %8x  ", vi->vfmt->Gmask         );
-    printf("  Bmask   %8x  ", vi->vfmt->Bmask         );
-    printf("  Amask   %8x\n", vi->vfmt->Amask         );
-    printf("  Rshift        %2d  ", vi->vfmt->Rshift        );
-    printf("  Gshift        %2d  ", vi->vfmt->Gshift        );
-    printf("  Bshift        %2d  ", vi->vfmt->Bshift        );
-    printf("  Ashift        %2d\n", vi->vfmt->Ashift        );
-    printf("  Rloss          %d  ", vi->vfmt->Rloss         );
-    printf("  Gloss          %d  ", vi->vfmt->Gloss         );
-    printf("  Bloss          %d  ", vi->vfmt->Bloss         );
-    printf("  Aloss          %d\n", vi->vfmt->Aloss         );
-    printf("  colorkey       %x  ", vi->vfmt->colorkey      );
-    printf("  alpha          %d\n", vi->vfmt->alpha         );
-    printf("\n");
-#endif
-
-    // ���Ѳ�ǽ�ʥ������ɥ��Υ�������Ĵ�٤Ƥ���
-    for (i = 0; i < 2; i++) {
-	Uint32 flags = 0;
-	int w, h;
-
-	if (i == 0) flags = 0;			// 1���ܤϥ������ɥ���
-	else        flags = SDL_FULLSCREEN;	// 2���ܤ������̤������å�
-
-	if (use_hwsurface) flags |= SDL_HWPALETTE | SDL_HWSURFACE;
-	else               flags |= SDL_HWPALETTE | SDL_SWSURFACE;
-
-	if (use_doublebuf) flags |= SDL_DOUBLEBUF;
-
-	// ���Ѳ�ǽ�ʺ��祵����������
-	sdl_mode = SDL_ListModes(NULL, flags);
-
-	if        (sdl_mode == (SDL_Rect**) 0) {	// ���⡼���Բ�
-	    w = 0;
-	    h = 0;
-	} else if (sdl_mode == (SDL_Rect**)-1) {	// ���⡼�ɲ�
-	    w = 10000;
-	    h = 10000;
-	} else {					// �⡼�ɤ������å�
-	    w = sdl_mode[0]->w;					// �ǽ餬
-	    h = sdl_mode[0]->h;					//   ������
-
-#ifdef	DEBUG_PRINTF
-	    {
-	      int j;
-	      for (j=0; sdl_mode[j]; j++)
-		printf("  %sSize %3d:  %4d x %4d  (%.4f)\n",
-		       (i==0) ? "Window" : "Fullscreen", j, sdl_mode[j]->w,
-		       sdl_mode[j]->h, (double)sdl_mode[j]->w/sdl_mode[j]->h);
-	    }
-#endif
+	if (verbose_proc) {
+		printf("Initializing SDL2 (%d.%d.%d) ... ",
+			   libver.major, libver.minor, libver.patch);
+		fflush(NULL);
 	}
 
-	if (i == 0) { win_w = w;  win_h = h; }
-	else        { ful_w = w;  ful_h = h; }
+	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0) {
 
-	sdl_mode_flags = flags;
-    }
-    // ���λ����ǡ� sdl_mode �ˤϡ������̻��Υ⡼�ɰ��������åȤ����Ƥ��롣
-    // sdl_mode_flags �ˤϡ������̻��Υ⡼�ɤΥե饰�����åȤ����Ƥ��롣
+		if (verbose_proc)
+			printf("Failed\n");
+		fprintf(stderr, "SDL Error: %s\n", SDL_GetError());
 
-    graph_spec.window_max_width      = win_w;
-    graph_spec.window_max_height     = win_h;
-    graph_spec.fullscreen_max_width  = ful_w;
-    graph_spec.fullscreen_max_height = ful_h;
-    graph_spec.forbid_status         = FALSE;
-    graph_spec.forbid_half           = FALSE;
-
-    if (verbose_proc)
-	printf("  INFO:%dbpp(%dbyte), Maxsize=win(%d,%d),full(%d,%d)\n",
-	       sdl_depth, sdl_byte_per_pixel, win_w, win_h, ful_w, ful_h);
-
-    return &graph_spec;*/
-
-    // FIXME: identify available video modes (SDL_GetDisplayMode)
-    // The maximum render size (double) is 1280x800, so
-    // 1296 x 816 (per x16) gives a small border for those who want it
-    // Currently this does nothing to limit -height/-width 
-
-    graph_spec.window_max_width = 1296;
-    graph_spec.window_max_height = 816;
-    graph_spec.fullscreen_max_width = 0;
-    graph_spec.fullscreen_max_height = 0;
-    graph_spec.forbid_status         = FALSE;
-    graph_spec.forbid_half           = FALSE;
-
-    return &graph_spec;
-}
-
-/************************************************************************/
-
-static	int	search_mode(int w, int h, double aspect);
-
-//static	SDL_Surface	*sdl_display;
-static	SDL_Surface	*sdl_offscreen;
-static  SDL_Texture *sdl_texture;
-static  SDL_Window  *sdl_window;
-static  SDL_Renderer* sdl_renderer;
-
-
-const T_GRAPH_INFO	*graph_setup(int width, int height,
-				     int fullscreen, double aspect)
-{
-    /*Uint32 flags;
-
-    // �������ѹ��䡢�������ɥ������������ؤκݤϡ����� SDL_SetVideoMode() ��
-    // �Ƥ֤����������˰�ö�ӥǥ����֥����ƥ�����λ������ɬ�פ������餷��(?)��
-    // (�ӥǥ��ɥ饤�а�¸���� x11, windib, directx �ϡ���λ������)
-
-    if (graph_exist) {
-	if (verbose_proc) printf("Re-Initializing Graphic System (SDL:%s) ...",
-				 sdl_vname);
-
-	if ((graph_info.fullscreen == FALSE && fullscreen == FALSE) &&
-	    (! (sdl_display->flags & SDL_FULLSCREEN))) {
-
-	    // �������ɥ��Υ������ѹ����ϡ���λ��ɬ�פϤʤ����������ġ�
-	    if (verbose_proc) printf("\n");
+		return FALSE;
 
 	} else {
-	    SDL_QuitSubSystem(SDL_INIT_VIDEO);
-	    graph_exist = FALSE;
-	}
-    }
 
+		if (verbose_proc)
+			printf("OK\n");
 
-    // VIDEO����ö��λ�����ʤ顢VIDEO�κƽ�����
-    if (! SDL_WasInit(SDL_INIT_VIDEO)) {
-	if (SDL_InitSubSystem(SDL_INIT_VIDEO) != 0) {
-	    if (verbose_proc) printf(" FAILED\n");
-	    return NULL;
-	}
-	// VIDEO����ö��λ�����ȡ� sdl_mode ��̵���ˤʤ롣(�ǥХ����ˤ��롩)
-	sdl_mode = SDL_ListModes(NULL, sdl_mode_flags);
+#if DEBUG_PRINTF
+		{
+			int i, num;
+			int j, max;
 
-		// sdl_mode �����Ƥ����������Ѥ��äƤ��ޤä����ɤ����褦��
+			/* 今のビデオドライバと、利用可能なビデオドライバの一覧 */
+			printf("video driver = %s\n", SDL_GetCurrentVideoDriver());
+			num = SDL_GetNumVideoDrivers();
+			for (i = 0; i < num; i++) {
+				printf("  %2d: %s\n", i, SDL_GetVideoDriver(i));
+			}
 
-	if (verbose_proc) printf(" OK\n");
-    }
+			/* 今のオーディオドライバと、利用可能なオーディオドライバの一覧 */
+			printf("audio driver = %s\n", SDL_GetCurrentAudioDriver());
+			num = SDL_GetNumAudioDrivers();
+			for (i = 0; i < num; i++) {
+				printf("  %2d: %s\n", i, SDL_GetAudioDriver(i));
+			}
 
+			/* 使用可能なレンダリングドライバの一覧 */
+			num = SDL_GetNumRenderDrivers();
+			printf("rendering driver = %d driver(s)\n", num);
+			for (i = 0; i < num; i++) {
+				SDL_RendererInfo info;
+				if (SDL_GetRenderDriverInfo(i, &info) == 0) {
+					Uint32 f = info.flags;
+					printf("  %2d: %-16s %c|%c|%c|%c\n", i, info.name,
+						   (f & SDL_RENDERER_SOFTWARE) ? 'S' : ' ',
+						   (f & SDL_RENDERER_ACCELERATED) ? 'H' : ' ',
+						   (f & SDL_RENDERER_PRESENTVSYNC) ? 'V' : ' ',
+						   (f & SDL_RENDERER_TARGETTEXTURE) ? 'T' : ' ');
+				}
+			}
 
-    // �����̥⡼�ɤξ��硢Ŭ�ڤʥ⡼�ɤ�����
-    if (fullscreen) {
-	int fit = search_mode(width, height, aspect);
-	if (fit < 0) {
-	    fullscreen = FALSE;
-	} else {
-	    width  = sdl_mode[fit]->w;
-	    height = sdl_mode[fit]->h;
-	}
-    }
-
-    // �������ɥ��������̡ˤ򳫤�
-    if (verbose_proc) {
-	if (fullscreen) printf("  Trying full screen mode ... ");
-	else            printf("  Opening window ... ");
-    }
-
-    if (fullscreen) flags = SDL_FULLSCREEN;
-    else            flags = 0;
-
-    if (use_hwsurface) flags |= SDL_HWPALETTE | SDL_HWSURFACE;
-    else               flags |= SDL_HWPALETTE | SDL_SWSURFACE;
-
-    if (use_doublebuf) flags |= SDL_DOUBLEBUF;
-
-    sdl_display = SDL_SetVideoMode(width, height, sdl_depth, flags);
-
-    if (verbose_proc)
-	printf("%s (%dx%d)\n", (sdl_display ? "OK" : "FAILED"), width, height);
-
-    if (sdl_display == NULL) return NULL;
-
-
-    // �����꡼���Хåե�������
-
-    if (verbose_proc) printf("  Allocating screen buffer ... ");
-
-    sdl_offscreen = SDL_CreateRGBSurface(SDL_SWSURFACE,
-					 width, height, sdl_depth,
-					 0, 0, 0, 0);
-    if (verbose_proc) printf("%s\n", (sdl_offscreen ? "OK" : "FAILED"));
-
-    if (sdl_offscreen == NULL) return NULL;
-
-
-
-    // ���̾����򥻥åȤ��ơ��֤�
-
-    graph_info.fullscreen	= fullscreen;
-    graph_info.width		= sdl_offscreen->w;
-    graph_info.height		= sdl_offscreen->h;
-    graph_info.byte_per_pixel	= sdl_byte_per_pixel;
-    graph_info.byte_per_line	= sdl_offscreen->pitch;
-    graph_info.buffer		= sdl_offscreen->pixels;
-    graph_info.nr_color		= 255;
-    graph_info.write_only	= FALSE;
-    graph_info.broken_mouse	= FALSE;
-    graph_info.draw_start	= NULL;
-    graph_info.draw_finish	= NULL;
-    graph_info.dont_frameskip	= FALSE;
-
-    graph_exist = TRUE;
-
-    if (verbose_proc)
-	printf("    VideoMode %dx%d -> %dx%dx%d(%d)  %c%c%c%c  R:%x G:%x B:%x\n",
-	       width, height, sdl_display->w, sdl_display->h,
-	       sdl_display->format->BitsPerPixel,
-	       sdl_display->format->BytesPerPixel,
-	       (sdl_display->flags & SDL_SWSURFACE) ? 'S' : '-',
-	       (sdl_display->flags & SDL_HWSURFACE) ? 'H' : 'S',
-	       (sdl_display->flags & SDL_DOUBLEBUF) ? 'D' : '-',
-	       (sdl_display->flags & SDL_FULLSCREEN) ? 'F' : '-',
-	       sdl_display->format->Rmask,
-	       sdl_display->format->Gmask, sdl_display->format->Bmask);
-
-#if 0	// debug
-printf("@ fullscreen      %d\n",    graph_info.fullscreen    );
-printf("@ width           %d\n",    graph_info.width         );
-printf("@ height          %d\n",    graph_info.height        );
-printf("@ byte_per_pixel  %d\n",    graph_info.byte_per_pixel);
-printf("@ byte_per_line   %d\n",    graph_info.byte_per_line );
-printf("@ buffer          %p\n",    graph_info.buffer        );
-printf("@ nr_color        %d\n",    graph_info.nr_color      );
-printf("@ write_only      %d\n",    graph_info.write_only    );
-printf("@ broken_mouse    %d\n",    graph_info.broken_mouse  );
-printf("@ dont_frameskip  %d\n",    graph_info.dont_frameskip);
-#endif
-
-    return &graph_info;*/
-
-    // If the program (sdl) window size is not defined in the rc file
-    // then set the window size based on rc file's -half|-full|-double.
-    // If this is undefined, then the default is -full
-
-    static int sdl_width;
-    static int sdl_height;
-    static int render_width;
-    static int render_height;
-
-    if (screen_size == SCREEN_SIZE_FULL) {
-       sdl_width = 640;
-       sdl_height = 400;
-       render_width = 640;
-       render_height= 400;
-    }
-    if (screen_size == SCREEN_SIZE_DOUBLE) {
-       sdl_width = 1280;
-       sdl_height = 800;
-       render_width = 1280;
-       render_height = 800;
-    }
-    if (screen_size == SCREEN_SIZE_HALF) {
-       sdl_width = 320;
-       sdl_height = 200;
-       render_width = 320;
-       render_height = 200;
-    }
-    // try to avoid an rc defined screen size smaller than the render size
-    if ( WIDTH && HEIGHT ) {
-       sdl_width = WIDTH;
-       sdl_height = HEIGHT;
-
-       if ( sdl_width < render_width ) {
-          sdl_width = render_width;
-          sdl_height = render_height;
-       }
-       if ( sdl_height < render_height ) {
-           sdl_height = render_height;
-           sdl_width = render_width;
-       }
-    }
-
-    // FIXME HACK just trying to get this damn thing to work
-    sdl_window = SDL_CreateWindow("quasi88",
-                  SDL_WINDOWPOS_UNDEFINED,
-                  SDL_WINDOWPOS_UNDEFINED,
-                  sdl_width, sdl_height, 0);
-
-    sdl_renderer = SDL_CreateRenderer(sdl_window, -1, 0);
-
-    sdl_offscreen = SDL_CreateRGBSurface(0, sdl_width, sdl_height, 32,
-                      0x00ff0000,
-                      0x0000ff00,
-                      0x000000ff,
-                      0xff000000);
-
-    sdl_texture = SDL_CreateTexture(
-                      sdl_renderer,
-                      SDL_PIXELFORMAT_ARGB8888,
-                      SDL_TEXTUREACCESS_STREAMING,
-                      sdl_width, sdl_height);
-
-    // HACKS
-    sdl_byte_per_pixel = 4;
-
-    graph_info.fullscreen	= FALSE;
-    graph_info.width		= sdl_offscreen->w;
-    graph_info.height		= sdl_offscreen->h;
-    graph_info.byte_per_pixel	= sdl_byte_per_pixel;
-    graph_info.byte_per_line	= sdl_offscreen->pitch;
-    graph_info.buffer		= sdl_offscreen->pixels;
-    graph_info.nr_color		= 255;
-    graph_info.write_only	= FALSE;
-    graph_info.broken_mouse	= FALSE;
-    graph_info.draw_start	= NULL;
-    graph_info.draw_finish	= NULL;
-    graph_info.dont_frameskip	= FALSE;
-
-    return &graph_info;
-}
-
-
-
-/*======================================================================*/
-#define	FABS(a)		(((a) >= 0.0) ? (a) : -(a))
-
-static	int	search_mode(int w, int h, double aspect)
-{
-    int i;
-    int fit = -1;
-    int fit_w = 0, fit_h = 0;
-    double fit_a = 0.0;
-
-    for (i=0; sdl_mode[i]; i++) {
-	/* ���̥������˼��ޤäƤ��뤳�� */
-	if (w <= sdl_mode[i]->w &&
-	    h <= sdl_mode[i]->h) {
-
-	    int tmp_w = sdl_mode[i]->w;
-	    int tmp_h = sdl_mode[i]->h;
-	    double tmp_a = FABS(((double)tmp_w / tmp_h) - aspect);
-
-	    /* �ǽ��˸��Ĥ��ä����Τ��ޤ��ϥ��祤�� */
-	    if (fit == -1) {
-		fit = i;
-		fit_w = tmp_w;
-		fit_h = tmp_h;
-		fit_a = tmp_a;
-
-	    } else {
-	    /* �������ϡ������Τ����٤ơ������ե��åȤ����Х��祤�� */
-
-		/* ��Ĺ���˥������ʤ����������ڥ���̤�����ξ��� */
-		if (aspect >= 1.0 || aspect < 0.01) {
-
-		    /* �Ĥκ��ξ��ʤ��ۤ����ޤ��ϥ����ڥ������ζᤤ�ۤ� */
-		    if (((tmp_h - h) < (fit_h - h)) ||
-			((tmp_h == fit_h) && (tmp_a < fit_a))) {
-			fit = i;
-			fit_w = tmp_w;
-			fit_h = tmp_h;
-			fit_a = tmp_a;
-		    }
-
-		} else {	/* ��Ĺ���˥��� (�ʤ��ư���Ū�ʤ�?) �ξ��� */
-
-		    /* ���κ��ξ��ʤ��ۤ����ޤ��ϥ����ڥ������ζᤤ�ۤ� */
-		    if (((tmp_w - w) < (fit_w - w)) ||
-			((tmp_w == fit_w) && (tmp_a < fit_a))) {
-			fit = i;
-			fit_w = tmp_w;
-			fit_h = tmp_h;
-			fit_a = tmp_a;
-		    }
+			/* ディスプレイの数と、利用可能なディスプレイモードの一覧 */
+			max = SDL_GetNumVideoDisplays();
+			for (j = 0; j < max; j++) {
+				SDL_DisplayMode mode;
+				num = SDL_GetNumDisplayModes(j);
+				printf("display[%d] = %d mode(s)\n", j, num);
+				for (i = 0; i < num; i++) {
+					if (SDL_GetDisplayMode(j, i, &mode) == 0) {
+						Uint32 f = mode.format;
+						printf("  %2d: %4d x %4d (%2dbpp %s)\n",
+							   i, mode.w, mode.h,
+							   SDL_BITSPERPIXEL(f), SDL_GetPixelFormatName(f));
+					}
+				}
+			}
 		}
-	    }
+#endif
+		return TRUE;
 	}
-    }
-    /* ���������Τ������ʤ������ϡ� -1 ���֤� */
-    return fit;
 }
 
 /************************************************************************/
 
-void	graph_exit(void)
+void sdl2_exit(void)
 {
-    SDL_SetWindowGrab(sdl_window, FALSE);
-
-    SDL_QuitSubSystem(SDL_INIT_VIDEO);
+	SDL_Quit();
 }
 
 
 /************************************************************************
- *	���γ���
- *	���β���
+ *      グラフィック処理の初期化
+ *      グラフィック処理の動作
+ *      グラフィック処理の終了
  ************************************************************************/
 
-void	graph_add_color(const PC88_PALETTE_T color[],
-			int nr_color, unsigned long pixel[])
+const T_GRAPH_SPEC *graph_init(void)
 {
-    int i;
-    for (i=0; i<nr_color; i++) {
-	pixel[i] = SDL_MapRGB(sdl_offscreen->format,
-			      color[i].red, color[i].green, color[i].blue);
-    }
+	int ful_w, ful_h;
+	SDL_DisplayMode mode;
+
+	if (verbose_proc) {
+		printf("Initializing Graphic System ... OK");
+	}
+
+	if (use_desktop_fullscreen) {
+		/* デスクトップフルスクリーンなら、最大サイズは無制限にする */
+		ful_w = 10000;
+		ful_h = 10000;
+
+	} else {
+		/* 0番目のディスプレイだけ確認。リストの0番目が一番幅の大きいサイズ */
+		if (SDL_GetDisplayMode(0, 0, &mode) == 0) {
+			ful_w = mode.w;
+			ful_h = mode.h;
+		} else {
+			ful_w = 0;
+			ful_h = 0;
+		}
+	}
+
+
+	graph_spec.window_max_width		= 10000;
+	graph_spec.window_max_height	= 10000;
+	graph_spec.fullscreen_max_width	= ful_w;
+	graph_spec.fullscreen_max_height= ful_h;
+	graph_spec.forbid_status		= FALSE;
+	graph_spec.forbid_half			= FALSE;
+
+	if (verbose_proc) {
+		printf(" (FullscreenMax=%dx%d)\n", ful_w, ful_h);
+	}
+
+	return &graph_spec;
 }
 
 /************************************************************************/
 
-void	graph_remove_color(int nr_pixel, unsigned long pixel[])
+/* T_GRAPH_INFO (画面サイズ、描画バッファのポインタ、使える色数など) を返す
+   引数で指示されたどおりになるとは限らない */
+
+static SDL_Window *sdl_window;
+static SDL_Renderer *sdl_renderer;
+static SDL_Texture *sdl_texture;
+static SDL_Surface *sdl_offscreen;
+
+#define	ICON_SIZE	48
+
+const T_GRAPH_INFO *graph_setup(int width, int height,
+								int fullscreen, double aspect)
 {
-    /* ���˴ؤ��Ƥϲ����������ʤ��Τǡ������Ǥ��ʤˤ⤷�ʤ� */
-}
+	int display_index;
+	SDL_DisplayMode desktop;
+	int full_width, full_height;
+	int depth;
+	int byte_per_pixel = 4;
+	Uint32 flags;
+	const unsigned long *icon_pixel;
+
+	/* まだウインドウが無いならば生成する。この時はまだ全画面にはしない */
+	if (graph_exist == FALSE) {
+
+		now_fullscreen = FALSE;
+		now_width = width;
+		now_height = height;
+
+		flags = 0;
+		/* flags |= SDL_WINDOW_RESIZABLE; */
+
+		if (verbose_proc) {
+			printf("Screen init ... ");
+		}
+		if ((sdl_window = SDL_CreateWindow("QUASI88",
+										   SDL_WINDOWPOS_UNDEFINED,
+										   SDL_WINDOWPOS_UNDEFINED,
+										   width, height, flags)) == NULL) {
+			return NULL;
+		}
+
+		flags = 0;
+		if (use_software_rendering) {
+			if (verbose_proc) {
+				printf("(Using software rendering)");
+			}
+			flags = SDL_RENDERER_SOFTWARE;
+		} else {
+			flags = SDL_RENDERER_ACCELERATED;
+		}
+		if ((sdl_renderer = SDL_CreateRenderer(sdl_window, -1,
+											   flags)) == NULL) {
+			return NULL;
+		}
+
+		SDL_SetRenderDrawColor(sdl_renderer, 0, 0, 0, 255);
+
+#if defined(ICON_SIZE)
+#if   (ICON_SIZE == 48)
+		icon_pixel = iconimage_get_48x48();
+#elif (ICON_SIZE == 32)
+		icon_pixel = iconimage_get_32x32();
+#elif (ICON_SIZE == 16)
+		icon_pixel = iconimage_get_16x16();
+#else
+#error
+#endif
+		if (icon_pixel) {
+			SDL_Surface *icon_surface;
+			Uint32 icon[ ICON_SIZE * ICON_SIZE ];
+			int i;
+
+			for (i = 0; i < ICON_SIZE * ICON_SIZE; i++) {
+				icon[i] = icon_pixel[i];
+			}
+			icon_surface =
+				SDL_CreateRGBSurfaceFrom(icon, ICON_SIZE, ICON_SIZE,
+										 32,
+										 ICON_SIZE * sizeof(Uint32),
+										 0x00ff0000, 0x0000ff00, 0x000000ff,
+										 0xff000000);
+			SDL_SetWindowIcon(sdl_window, icon_surface);
+			SDL_FreeSurface(icon_surface);
+		}
+#endif
+
+#if SDL_VERSION_ATLEAST(2, 0, 4)
+		/* (Windows) Alt+F4 で SDL_WINDOWEVENT_CLOSE イベントを生成しない */
+		SDL_SetHint(SDL_HINT_WINDOWS_NO_CLOSE_ON_ALT_F4, "1");
+#endif
+	} else {
+		if (verbose_proc) {
+			printf("Screen change ... ");
+		}
+	}
+
+	/* この時点でウインドウはすでにある */
+	if (verbose_proc) {
+		printf("Req %s:(%dx%d) => ",
+			   (fullscreen) ? "full" : "win", width, height);
+	}
+
+	/* フルスクリーンが要求されたら、可否の判定と、画面サイズ計算を行う */
+	if (fullscreen) {
+		SDL_DisplayMode target, closest;
+
+		display_index = SDL_GetWindowDisplayIndex(sdl_window);
+
+		if (use_desktop_fullscreen) {
+			flags = SDL_WINDOW_FULLSCREEN_DESKTOP;
+
+			/* デスクトップサイズを取得し それにあわせた画面サイズを計算する */
+			if (SDL_GetDesktopDisplayMode(display_index, &desktop) == 0) {
+
+				double desktop_aspect = ((double) desktop.w / desktop.h);
+				double request_aspect = ((double) width / height);
+
+				if (aspect >= 0.05) {
+					desktop_aspect = aspect;
+				}
+
+				if (desktop_aspect <= request_aspect) {
+					full_width = width;
+					full_height = (int) (width / desktop_aspect);
+					full_height = (full_height + 1) & ~1;	/* 2の倍数 */
+				} else {
+					full_width = (int) (height * desktop_aspect);
+					full_width = (full_width + 7) & ~7;		/* 8 の倍数 */
+					full_height = height;
+				}
+
+				byte_per_pixel = SDL_BYTESPERPIXEL(desktop.format);
+
+				if (verbose_proc) {
+					printf("Try (%dx%d),desktop %dx%d => ",
+						   full_width, full_height, desktop.w, desktop.h);
+				}
+			} else {
+				fullscreen = FALSE;
+			}
+
+		} else {
+			flags = SDL_WINDOW_FULLSCREEN;
+
+			/* 最も画面サイズに近いディスプレイモードを取得する */
+			target.w = width;
+			target.h = height;
+			target.format = 0;
+			target.refresh_rate = 0;
+			target.driverdata = 0;
+			if (SDL_GetClosestDisplayMode(display_index, &target, &closest)) {
+
+				full_width = closest.w;
+				full_height = closest.h;
+				byte_per_pixel = SDL_BYTESPERPIXEL(closest.format);
+
+				if (verbose_proc) {
+					printf("Try (%dx%d) => ", full_width, full_height);
+				}
+			} else {
+				fullscreen = FALSE;
+			}
+		}
+	}
+
+	/* 現在、フルスクリーンなら一旦ウインドウに戻す */
+	if (now_fullscreen) {
+		SDL_SetWindowFullscreen(sdl_window, 0);
+		SDL_SetWindowPosition(sdl_window,
+							  SDL_WINDOWPOS_CENTERED,
+							  SDL_WINDOWPOS_CENTERED);
+		now_fullscreen = FALSE;
+	}
+
+	/* フルスクリーンに変更する */
+	if (fullscreen) {
+
+		SDL_SetWindowSize(sdl_window, full_width, full_height);
+
+		if (SDL_SetWindowFullscreen(sdl_window, flags) == 0) {
+
+			now_fullscreen = TRUE;
+			now_width = full_width;
+			now_height = full_height;
+
+		} else {
+			fullscreen = FALSE;
+		}
+	}
+
+	/* ウインドウに変更する (フルスクリーンに失敗した時もこっち) */
+	if (fullscreen == FALSE) {
+
+		SDL_SetWindowSize(sdl_window, width, height);
+
+		now_fullscreen = FALSE;
+		now_width = width;
+		now_height = height;
+
+		display_index = SDL_GetWindowDisplayIndex(sdl_window);
+		if (SDL_GetDesktopDisplayMode(display_index, &desktop) == 0) {
+			byte_per_pixel = SDL_BYTESPERPIXEL(desktop.format);
+		}
+	}
 
 
+	/* ウインドウの変更が終わったので、色深度を決定する */
 
-/************************************************************************
- *	�����ե��å��ι���
- ************************************************************************/
+#if     defined(SUPPORT_16BPP) && defined(SUPPORT_32BPP)
+	if (byte_per_pixel == 4) {
+		depth = 32;					/* 24 だと SDL_CreateRGBSurface で NG? */
+	} else if (byte_per_pixel == 2) {
+		depth = 16;
+	} else {
+		depth = 32;
+		byte_per_pixel = 4;
+	}
+#elif   defined(SUPPORT_16BPP)
+	depth = 16;
+	byte_per_pixel = 2;
+#elif   defined(SUPPORT_32BPP)
+	depth = 32;
+	byte_per_pixel = 4;
+#endif
 
-void	graph_update(int nr_rect, T_GRAPH_RECT rect[])
-{
-    SDL_Rect srect[16], drect;
-    int i;
-
-    if (nr_rect > 16) {
-	fprintf(stderr, "SDL: Maybe Update Failied...\n");
-	nr_rect = 16;
-    }
-
-    for (i=0; i<nr_rect; i++) {
-	srect[i].x = rect[i].x;
-	srect[i].y = rect[i].y;
-	srect[i].w = rect[i].width;
-	srect[i].h = rect[i].height;
-
-	drect = srect[i];
-
-	/*if (SDL_BlitSurface(sdl_offscreen, &srect[i], sdl_display, &drect) <0) {
-	    fprintf(stderr, "SDL: Unsuccessful blitting to %i, %i (%i x %i)\n", srect[i].x, srect[i].y, srect[i].w, srect[i].h);
-	}*/
-    }
-
-  // Copy the SDL_Surface into an SDL_Texture
-  SDL_UpdateTexture(sdl_texture, NULL, sdl_offscreen->pixels, sdl_offscreen->pitch);
-
-  // Write the texture to screen
-  SDL_RenderClear(sdl_renderer);
-  SDL_RenderCopy(sdl_renderer, sdl_texture, NULL, NULL);
-
-  // Flip
-  SDL_RenderPresent(sdl_renderer);
-
-  // FIXME: no idea what this piece of code was supposed to do
-
-	/*for (i=0; i<nr_rect; i++) {
-	    drect = srect[i];
-	    SDL_BlitSurface(sdl_offscreen, &srect[i], sdl_display, &drect);
-	}*/
-}
+	if (verbose_proc) {
+		printf("Res %s:(%dx%d),%dbpp\n", (now_fullscreen) ? "full" : "win",
+			   now_width, now_height, depth);
+	}
 
 
-/************************************************************************
- *	�����ȥ�������
- *	°��������
- ************************************************************************/
+	/* レンダラー、テクスチャー、サーフェスを再設定 */
 
-void	graph_set_window_title(const char *title)
-{
-    SDL_SetWindowTitle(sdl_window, title);
+	if (now_fullscreen == 0) {
+		SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "nearest");
+	} else {
+		SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");
+	}
+	SDL_RenderSetLogicalSize(sdl_renderer, now_width, now_height);
+
+
+	if (sdl_offscreen) {
+		SDL_FreeSurface(sdl_offscreen);
+	}
+	/*                                  depth が 24 だとうまくいかない?  ↓ */
+	if ((sdl_offscreen = SDL_CreateRGBSurface(0, now_width, now_height, depth,
+											  0, 0, 0, 0)) == NULL) {
+		return NULL;
+	}
+
+
+	if (sdl_texture) {
+		SDL_DestroyTexture(sdl_texture);
+	}
+	/*                  ピクセルフォーマットは surface にあわせる ↓ */
+	if ((sdl_texture = SDL_CreateTexture(sdl_renderer,
+										 sdl_offscreen->format->format,
+										 SDL_TEXTUREACCESS_STREAMING,
+										 now_width, now_height)) == NULL) {
+		return NULL;
+	}
+
+	/* 暗くなれ */
+	/* SDL_SetTextureColorMod(sdl_texture, 128, 128, 128); */
+
+
+	SDL_RenderClear(sdl_renderer);
+	/* SDL_RenderPresent(sdl_renderer); */
+
+#if 0
+	{
+		int w, h;
+		SDL_Rect rect;
+		SDL_GetRendererOutputSize(sdl_renderer, &w, &h);
+		printf("render output size %dx%d\n", w, h);
+
+		SDL_RenderGetLogicalSize(sdl_renderer, &w, &h);
+		printf("render logical size %dx%d\n", w, h);
+
+		SDL_RenderGetViewport(sdl_renderer, &rect);
+		printf("render viewport %dx%d+%d+%d\n", rect.w, rect.h, rect.x,
+			   rect.y);
+	}
+#endif
+
+	/* graph_info に諸言をセットする */
+
+	graph_info.fullscreen		= fullscreen;
+	graph_info.width			= sdl_offscreen->w;
+	graph_info.height			= sdl_offscreen->h;
+	graph_info.byte_per_pixel	= byte_per_pixel;
+	graph_info.byte_per_line	= sdl_offscreen->pitch;
+	graph_info.buffer			= sdl_offscreen->pixels;
+	graph_info.nr_color			= 255;
+	graph_info.write_only		= TRUE;
+	graph_info.broken_mouse		= FALSE;
+	graph_info.draw_start		= NULL;
+	graph_info.draw_finish		= NULL;
+	graph_info.dont_frameskip	= FALSE;
+
+	graph_exist = TRUE;
+
+	return &graph_info;
 }
 
 /************************************************************************/
 
-void	graph_set_attribute(int mouse_show, int grab, int keyrepeat_on)
+void graph_exit(void)
 {
-    if (mouse_show) SDL_ShowCursor(SDL_ENABLE);
-    else            SDL_ShowCursor(SDL_DISABLE);
+	if (sdl_window) {
+		SDL_SetWindowGrab(sdl_window, SDL_FALSE);
+	}
 
-    if (grab) SDL_SetWindowGrab(sdl_window, TRUE);
-    else      SDL_SetWindowGrab(sdl_window, FALSE);
-
-    /*if (keyrepeat_on) SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY,
-					  SDL_DEFAULT_REPEAT_INTERVAL);
-    else              SDL_EnableKeyRepeat(0, 0);*/
-    // FIXME ^
-
-    sdl_mouse_rel_move = (mouse_show == FALSE && grab) ? TRUE : FALSE;
-
-    /* SDL �ϡ��������椫�ĥޥ������դʤ顢�������ɥ���ü�˥ޥ�����
-       �Ҥä����äƤ⡢�ޥ�����ư�������̤����ΤǤ��롣
-
-       �ʤΤǡ����ξ����� sdl_mouse_rel_move �˥��åȤ��Ƥ�����
-       ���ʤ顢�ޥ�����ư�������̡����ʤ����а��֤Ȥ��� (event.c)
-
-       ���˥塼�Ǥϡ����ʤ餺�����֤ʤ� (�ޥ����Ϥ��� or �ʤ�) �ʤΤǡ�
-       ���ξ����ˤϤ����餺�����˥������ɥ���ü�ǥޥ��������ߤ��롣
-    */
+	SDL_QuitSubSystem(SDL_INIT_VIDEO);
 }
 
-/*
-  -videodrv directx �ˤĤ���
+/************************************************************************
+ *              色の確保
+ *              色の解放
+ ************************************************************************/
 
-  �����֤��ꡢ�ޥ��������ξ��硢�����֤����ʤ�������
+void graph_add_color(const PC88_PALETTE_T color[],
+					 int nr_color, unsigned long pixel[])
+{
+	int i;
+	for (i = 0; i < nr_color; i++) {
+		pixel[i] = SDL_MapRGB(sdl_offscreen->format,
+							  color[i].red, color[i].green, color[i].blue);
+	}
+}
 
-  �����̤ǡ������֤ʤ����ޥ����ʤ��ˤ����ȡ�
-  �ޥ��������̤�ü�����ߤ��Ƥ��ޤ����������ޤ�������
-  �����̤ξ��硢�����֤ʤ��ϰ�̣�������Τ��� �ޥ����ǥ����ץ쥤�Ǹ���
+/************************************************************************/
+
+void graph_remove_color(int nr_pixel, unsigned long pixel[])
+{
+	/* 色に関しては何も管理しないので、ここでもなにもしない */
+}
+
+/************************************************************************
+ *              グラフィックの更新
+ ************************************************************************/
+
+void graph_update(int nr_rect, T_GRAPH_RECT rect[])
+{
+	SDL_Rect drect;
+	int i;
+
+	if (nr_rect > 16) {
+		fprintf(stderr, "SDL: Maybe Update Failied...\n");
+		nr_rect = 16;
+	}
+
+#if 0
+	for (i = 0; i < nr_rect; i++) {
+//		printf("%dx%d+%d+%d, ", rect[i].width, rect[i].height, rect[i].x, rect[i].y);
+
+		drect.x = rect[i].x;
+		drect.y = rect[i].y;
+		drect.w = rect[i].width;
+		drect.h = rect[i].height;
+
+		if (SDL_UpdateTexture(sdl_texture, &drect,
+							  ((char *) sdl_offscreen->pixels)
+							  + (drect.x * graph_info.byte_per_pixel)
+							  + (drect.y * sdl_offscreen->pitch),
+							  sdl_offscreen->pitch) < 0) {
+			fprintf(stderr, "SDL: Unsuccessful SDL_UpdateTexture\n");
+		}
+	}
+#elif 0
+	if (SDL_UpdateTexture
+		(sdl_texture, NULL, sdl_offscreen->pixels, sdl_offscreen->pitch) < 0) {
+		fprintf(stderr, "SDL: Unsuccessful SDL_UpdateTexture\n");
+	}
+#else
+	for (i = 0; i < nr_rect; i++) {
+		unsigned char *pixels;
+		int pitch;
+		int j;
+
+		drect.x = rect[i].x;
+		drect.y = rect[i].y;
+		drect.w = rect[i].width;
+		drect.h = rect[i].height;
+
+		SDL_LockTexture(sdl_texture, &drect, (void **) &pixels, &pitch);
+
+		for (j = 0; j < drect.h; j++) {
+			unsigned char *dst = pixels + (j * pitch);
+			unsigned char *src = ((unsigned char *) sdl_offscreen->pixels)
+				+ (drect.x * graph_info.byte_per_pixel)
+				+ ((drect.y + j) * sdl_offscreen->pitch);
+			int size = drect.w * graph_info.byte_per_pixel;
+			memcpy(dst, src, size);
+		}
+
+		SDL_UnlockTexture(sdl_texture);
+	}
+#endif
+
+	/* SDL_RenderClear(sdl_renderer); */
+	SDL_RenderCopy(sdl_renderer, sdl_texture, NULL, NULL);
+	SDL_RenderPresent(sdl_renderer);
+}
 
 
+/************************************************************************
+ *              タイトルの設定
+ *              属性の設定
+ ************************************************************************/
 
-  -videodrv dga �ˤĤ���
+void graph_set_window_title(const char *title)
+{
+	SDL_SetWindowTitle(sdl_window, title);
+}
 
-  �������ɥ��Ǥ������̤Ǥ⡢�����̥ե饰��Ω�äƤ��롣
-  �ǥե����Ȥ� -hwsurface �ˤʤäƤ��롣 -swsurface �λ����ϲ�ǽ��
-  -doublebuf �����ꤹ���ȡ� -hwsurface �⥻�åȤ�ͭ���ˤʤ롣
+/************************************************************************/
 
-  �����̢����������ɥ��򷫤��֤��ȥ������Ǥ���
+void graph_set_attribute(int mouse_show, int grab, int keyrepeat_on)
+{
+	if (mouse_show)
+		SDL_ShowCursor(SDL_ENABLE);
+	else
+		SDL_ShowCursor(SDL_DISABLE);
 
-  -hwsurface �Ǥϡ��ޥ�����ɽ���˻����ĳ����Ĥ롣
-  -swsurface �����ꤵ�ʤ���
+	if (grab)
+		SDL_SetWindowGrab(sdl_window, SDL_TRUE);
+	else
+		SDL_SetWindowGrab(sdl_window, SDL_FALSE);
 
-  -doublebuf �����ꤹ���ȡ��ޥ�����ɽ�������ʤ��ʤ롣
-*/
+	if (keyrepeat_on) {
+		sdl_repeat_on = TRUE;
+	} else {
+		sdl_repeat_on = FALSE;
+	}
+
+
+	if ((mouse_show == FALSE) && grab) {
+		SDL_SetRelativeMouseMode(SDL_TRUE);
+		sdl_mouse_rel_move = TRUE;
+	} else {
+		SDL_SetRelativeMouseMode(SDL_FALSE);
+		sdl_mouse_rel_move = FALSE;
+	}
+}

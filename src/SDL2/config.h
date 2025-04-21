@@ -1,87 +1,87 @@
-#ifndef	CONFIG_H_INCLUDED
-#define	CONFIG_H_INCLUDED
+#ifndef CONFIG_H_INCLUDED
+#define CONFIG_H_INCLUDED
 
 
 /*----------------------------------------------------------------------*/
-/* SDL �С���������ͭ������						*/
+/* SDL2 バージョン固有の定義                                            */
 /*----------------------------------------------------------------------*/
 
 #include <SDL_main.h>
 #include <SDL_endian.h>
 
 
-/* SDL�� QUASI88 �Τ����μ����� */
+/* SDL版 QUASI88 のための識別用 */
 
-#ifndef	QUASI88_SDL
-#define	QUASI88_SDL
+#ifndef QUASI88_SDL2
+#define QUASI88_SDL2
 #endif
 
 
 
-/* �����ǥ������ͥ��������å� */
+/* エンディアンネスをチェック */
 
-#if	(SDL_BYTEORDER == SDL_LIL_ENDIAN)
-#define	LSB_FIRST
+#if (SDL_BYTEORDER == SDL_LIL_ENDIAN)
+#define LSB_FIRST
 #else
-#undef	LSB_FIRST
+#undef  LSB_FIRST
 #endif
 
 
 
-/* ���˥塼�Υ����ȥ롿�С�������ɽ���ˤ��ɲä�ɽ���������� (Ǥ�դ�ʸ����) */
+/* メニューのタイトル／バージョン表示にて追加で表示する言葉 (任意の文字列) */
 
-#define	Q_COMMENT	"SDL2 port"
+#define Q_COMMENT       "SDL2 port"
 
 
 
-/* ���̤� bpp ��������SDL�Ǥ� 16bpp/32bpp �Τߤ򥵥ݡ��Ȥ��� */
+/* 画面の bpp の定義。SDL版は 16bpp/32bpp のみをサポートする */
 
-#undef	SUPPORT_8BPP
+#undef  SUPPORT_8BPP
 
-#ifndef	SUPPORT_16BPP
-#define	SUPPORT_16BPP
+#ifndef SUPPORT_16BPP
+#define SUPPORT_16BPP
 #endif
 
-#ifndef	SUPPORT_32BPP
-#define	SUPPORT_32BPP
+#ifndef SUPPORT_32BPP
+#define SUPPORT_32BPP
 #endif
 
 
 
 /*
-  MAME/XMAME �Υ������ɤ��Ȥ߹������硢
-	USE_SOUND
-  ���������Ƥ�����
+  MAME/XMAME のサウンドを組み込む場合、
+        USE_SOUND
+  を定義しておく。
 
-  FMGEN ���Ȥ߹��������ϡ�
-	USE_FMGEN
-  ���������Ƥ�����
+  FMGEN を組み込む場合は、
+        USE_FMGEN
+  も定義しておく。
 
-  �嵭�ϡ������ѥ������˰ʲ��Τ褦�ˤ����������롣
-  gcc  �ξ��硢�����ѥ����˥��ץ����� -DUSE_SOUND   �ʤɤȻ��ꤹ�롣
-  VC++ �ξ��硢�����ѥ����˥��ץ����� /D"USE_SOUND" �ʤɤȻ��ꤹ�롣
-  MWP  �ξ��硢�����ѥ����˥��ץ����� -d USE_SOUND  �ʤɤȻ��ꤹ�롣
+  上記は、コンパイル時に以下のようにして定義する。
+  gcc  の場合、コンパイラにオプション -DUSE_SOUND   などと指定する。
+  VC++ の場合、コンパイラにオプション /D"USE_SOUND" などと指定する。
+  MWP  の場合、コンパイラにオプション -d USE_SOUND  などと指定する。
 */
 
 
 
 
 /*
- *	VC++ depend
+ *      VC++ depend
  */
 
-#ifdef	_MSC_VER
+#ifdef  _MSC_VER
 
-/* VC �Υ����饤�󥭡���� */
-#define	INLINE		__inline
+/* VC のインラインキーワード */
+#define INLINE  __inline
 
 
-/* �������ɥɥ饤���Ѥˡ�PI(��)��M_PI(��)������ ��  MSC�ʳ��Ǥ�����? ɬ��? */
+/* サウンドドライバ用に、PI(π)とM_PI(π)を定義 …  MSC以外では不要? 必要? */
 #ifndef PI
-#define PI 3.14159265358979323846
+#define PI      3.14159265358979323846
 #endif
-#ifndef	M_PI
-#define	M_PI	PI
+#ifndef M_PI
+#define M_PI    PI
 #endif
 
 #endif
@@ -89,17 +89,17 @@
 
 
 /*
- *	SC depend
+ *      SC depend
  */
 
-#ifdef	macintosh
+#ifdef  macintosh
 
-/* �������ɥɥ饤���Ѥˡ�PI(��)��M_PI(��)������ ��  SC�Ǥ�ɬ��? */
+/* サウンドドライバ用に、PI(π)とM_PI(π)を定義 …  SCでも必要? */
 #ifndef PI
-#define PI 3.14159265358979323846
+#define PI      3.14159265358979323846
 #endif
-#ifndef	M_PI
-#define	M_PI	PI
+#ifndef M_PI
+#define M_PI    PI
 #endif
 
 #endif
