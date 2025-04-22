@@ -17,4 +17,11 @@ jobs:
       run: bash workflow-cfg.sh
     - name: make
       run: make
+
+    - name: upload-build
+    - uses: actions/upload-artifact@v2
+      with: 
+        name: quasi88-build
+        path: ./quasi88 
+
     
