@@ -19,7 +19,7 @@ jobs:
       run: make
 
     - name: upload-build
-    - uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v2
       with: 
         name: quasi88-build
         path: ./quasi88 
